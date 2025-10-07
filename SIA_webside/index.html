@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stimmungs-Übersicht</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script defer src="common/js/app.js"></script>
+  <link rel="stylesheet" href="common/css/style.css">
+</head>
+<body>
+  <h1>Stimmungs-Übersicht</h1>
+
+  <div class="card grid">
+    <div>
+      <h2 class="small">Aktueller Stand (Tabelle)</h2>
+      <table id="summaryTable" aria-live="polite">
+        <thead>
+          <tr><th>Kategorie</th><th>Anzahl</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Good</td><td id="valGood">—</td></tr>
+          <tr><td>Meh</td><td id="valMeh">—</td></tr>
+          <tr><td>Bad</td><td id="valBad">—</td></tr>
+          <tr><td><strong>Summe</strong></td><td id="valSum">—</td></tr>
+          <tr><td>Letzte Aktualisierung</td><td id="valTime">—</td></tr>
+        </tbody>
+      </table>
+
+      <div class="controls">
+        <button id="reloadBtn">⟳ Neu laden (summary.json)</button>
+        <label style="display:inline-flex;align-items:center;gap:8px;">
+          <input type="file" id="fileInput" accept=".json" style="display:none"/>
+          <button id="uploadBtn">📁 Datei hochladen</button>
+        </label>
+        <button id="pasteBtn">✎ JSON einfügen</button>
+      </div>
+
+      <div id="pasteArea" style="display:none">
+        <textarea id="jsonText" placeholder='{"good":1,"meh":2,"bad":3,"last_update":"..."}'></textarea>
+        <div class="controls" style="margin-top:8px">
+          <button id="applyJson" class="primary">Anwenden</button>
+          <button id="cancelJson">Abbrechen</button>
+        </div>
+      </div>
+</div>
+
+    <div>
+      <h2 class="small">Grafische Darstellung</h2>
+      <div class="card" style="padding:12px">
+        <canvas id="chartCanvas" aria-label="Stimmungsdiagramm" role="img"></canvas>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

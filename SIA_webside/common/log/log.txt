@@ -1,0 +1,9 @@
+{"time":"2025-10-06 10:14:17.191271", "event":"Button", "details":"Feeling", "value":"good"}
+{"time":"2025-10-06 10:14:18.228566", "event":"Button", "details":"Feeling", "value":"meh"}
+{"time":"2025-10-06 10:14:18.973917", "event":"Button", "details":"Feeling", "value":"bad"}
+{"time":"2025-10-06 10:14:20.549271", "event":"Button", "details":"Feeling", "value":"good"}
+{"time":"2025-10-06 10:14:22.249861", "event":"Button", "details":"Feeling", "value":"bad"}
+{"time":"2025-10-06 10:14:24.202158", "event":"Button", "details":"Feeling", "value":"good"}
+{"time":"2025-10-06 10:14:24.394203", "event":"Button", "details":"Feeling", "value":"good"}
+{"time":"2025-10-06 10:14:24.585582", "event":"Button", "details":"Feeling", "value":"good"}
+{"time":"2025-10-06 10:14:24.811741", "event":"Button", "details":"Feeling", "value":"good"}
