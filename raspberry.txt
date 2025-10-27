@@ -1,0 +1,50 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
+
+    fragment@0 {
+        target-path = "/soc";
+        __overlay__ {
+            keypad: keypad {
+                compatible = "gpio-keys";
+                #address-cells = <1>;
+                #size-cells = <0>;
+                pinctrl-names = "default";
+
+                button@1 {
+                    label = "Key G";
+                    linux,code = <34>;
+                    gpios = <&gpio 5 1>; /* GPIO 5, active low */
+                };
+
+                button@2 {
+                    label = "Key M";
+                    linux,code = <50>;
+                    gpios = <&gpio 6 1>; /* GPIO 6, active low */
+                };
+
+                button@3 {
+                    label = "Key B";
+                    linux,code = <48>;
+                    gpios = <&gpio 13 1>; /* GPIO 13, active low */
+                };
+            };
+        };
+    };
+};
+
+
+
+Save as gpio-keys-gmb.dts
+Compile:
+dtc -I dts -O dtb -o gpio-keys-gmb.dtbo gpio-keys-gmb.dts
+
+Copy to overlays:
+sudo cp gpio-keys-gmb.dtbo /boot/overlays/
+
+Add to /boot/config.txt:
+dtoverlay=gpio-keys-gmb
+
+Reboot. The buttons will act as keyboard keys g, m, and b.
