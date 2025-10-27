@@ -1,9 +1,15 @@
 import pygame
-import json
 import requests
+import json
 
+# --- Server-Adresse ---
+UPLOAD_URL = "http://192.168.178.115:5000/upload"  # IP deines Servers
+#UPLOAD_URL = "http://192.168.178.115:5000/upload"  # IP deines Servers
+
+# --- Pygame Setup ---
 pygame.init()
 screen = pygame.display.set_mode((600, 300))
+pygame.display.set_caption("Pygame Upload Demo")
 clock = pygame.time.Clock()
 running = True
 
@@ -11,51 +17,43 @@ good = 0
 meh = 0
 bad = 0
 
-
-UPLOAD_URL = "http://127.0.0.1:5000/upload"  #URL einsetzen
-
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-        # --- Tastenaktionen ---
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_g:
                 good += 1
-                print(f"Good : {good}")
-
+                print(f"Good: {good}")
             elif event.key == pygame.K_m:
                 meh += 1
-                print(f"Meh : {meh}")
-
+                print(f"Meh: {meh}")
             elif event.key == pygame.K_b:
                 bad += 1
-                print(f"Bad : {bad}")
-
+                print(f"Bad: {bad}")
             elif event.key == pygame.K_BACKSPACE:
                 good = meh = bad = 0
                 print("Zähler zurückgesetzt.")
-
-            # Wenn Enter gedrückt wird -> JSON speichern und hochladen
             elif event.key == pygame.K_RETURN:
+                # Daten als JSON vorbereiten
                 data = {"good": good, "meh": meh, "bad": bad}
 
-                # --- JSON lokal speichern ---
-                with open("summary.json", "w") as f:
-                    json.dump(data, f, indent=4)
-                print("summary.json gespeichert!")
+                # --- Lokale Ausgabe ---
+                print("Daten zum Upload:", data)
 
-                # --- JSON hochladen ---
+                # --- Upload an Flask-Server ---
                 try:
                     response = requests.post(UPLOAD_URL, json=data)
-                    print("Upload erfolgreich!")
-                    print("Server-Antwort:", response.status_code)
+                    if response.status_code == 200:
+                        print("Upload erfolgreich! Server-Antwort:", response.json())
+                    else:
+                        print("Fehler beim Upload. Status-Code:", response.status_code)
                 except Exception as e:
                     print("Fehler beim Upload:", e)
 
-    # --- Anzeige aktualisieren ---
-    screen.fill("black")
+    # --- Bildschirm füllen ---
+    screen.fill((0, 0, 0))
     pygame.display.flip()
     clock.tick(60)
 
