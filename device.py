@@ -3,8 +3,9 @@ import requests
 import json
 
 # --- Server-Adresse ---
-UPLOAD_URL = "http://192.168.178.115:5000/upload"  # IP deines Servers
-#UPLOAD_URL = "http://192.168.178.115:5000/upload"  # IP deines Servers
+UPLOAD_URL = "http://192.168.1.10:5000/upload"  # IP deines Servers
+#UPLOAD_URL = "http://127.0.0.1:5000/upload" #IP wenn der server über dasselbe gerät läuft
+
 
 # --- Pygame Setup ---
 pygame.init()
