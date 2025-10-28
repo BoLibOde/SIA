@@ -4,8 +4,11 @@ import json
 
 app = Flask(__name__)
 
+# Basisordner für die Website
+BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Kirill_Website")
+
 # Pfad für die JSON-Datei
-JSON_FILE = os.path.join("common", "json", "data.json")
+JSON_FILE = os.path.join(BASE_DIR, "common", "json", "data.json")
 os.makedirs(os.path.dirname(JSON_FILE), exist_ok=True)  # Ordner automatisch erstellen
 
 # --- Routes ---
@@ -13,13 +16,13 @@ os.makedirs(os.path.dirname(JSON_FILE), exist_ok=True)  # Ordner automatisch ers
 @app.route("/")
 def index():
     """Index-Seite ausliefern"""
-    return send_from_directory(".", "index.html")
+    return send_from_directory(BASE_DIR, "index.html")
 
 
 @app.route("/common/<path:path>")
 def serve_common(path):
     """CSS/JS-Dateien ausliefern"""
-    return send_from_directory("common", path)
+    return send_from_directory(os.path.join(BASE_DIR, "common"), path)
 
 
 @app.route("/upload", methods=["POST"])
