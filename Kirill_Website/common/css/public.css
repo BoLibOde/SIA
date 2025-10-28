@@ -7,13 +7,28 @@ h1 {
 	top: 100px;
 	left: 50px; 
 }
-.kleinDiagramm{
+.säule{
+    position: absolute;
 	width: 500px;
-	height: 100px;
+	height: 400px;
+	top:;
+	left:;
 	}
-	
+.linie{
+    position: absolute;
+    width: 500px;
+    height: 400px;
+    top:;
+	left:500px;
+	margin-left: 20px;
+}
+
 .diagramme{
 	position: absolute;
 	top:;
-	left:300px;
+	left:200px;
 }
+
+.box {
+    border: 2px solid black;
+ }

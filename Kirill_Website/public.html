@@ -13,15 +13,20 @@
     </header>
 	
 	<div class="links">
-		<table>
+		<table style="cursor:pointer;">
 			<tr>	<th>Abteilungen</th>	</tr>
-			<tr>	<td>Allgemein</td>	</tr>	
-			<tr>	<td>Werk</td>	</tr>
-			<tr>	<td>Büro</td>	</tr>
+			<tr onclick="updateCharts(0)">	<td>Allgemein</td>	</tr>
+			<tr onclick="updateCharts(1)">	<td>Werk</td>	</tr>
+			<tr onclick="updateCharts(2)">	<td>Büro</td>	</tr>
 		</table>
 	</div>
-	<div class="diagramme">
-		<canvas id="myChart" class="kleinDiagramm"></canvas>
+	<div class="diagramme box">
+        <div>
+            <canvas id="myChart" class="säule box"></canvas>
+        </div>
+        <div>
+            <canvas id="lineChart" class="linie box"></canvas>
+        </div>
 	</div>	 
   </main>
   <script src="common/js/public.js"></script>
