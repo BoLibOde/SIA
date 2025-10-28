@@ -1,30 +1,38 @@
 from flask import Flask, request, jsonify, send_from_directory
-import os, json
+import os
+import json
 
 app = Flask(__name__)
 
-# Neuer Speicherort für JSON-Daten
-JSON_FOLDER = os.path.join("common", "json")
-os.makedirs(JSON_FOLDER, exist_ok=True)  # Ordner erstellen, falls nicht vorhanden
-FILE_PATH = os.path.join(JSON_FOLDER, "data.json")
+# Pfad für die JSON-Datei
+JSON_FILE = os.path.join("common", "json", "data.json")
+os.makedirs(os.path.dirname(JSON_FILE), exist_ok=True)  # Ordner automatisch erstellen
 
+# --- Routes ---
 
 @app.route("/")
 def index():
+    """Index-Seite ausliefern"""
     return send_from_directory(".", "index.html")
 
 
 @app.route("/common/<path:path>")
 def serve_common(path):
+    """CSS/JS-Dateien ausliefern"""
     return send_from_directory("common", path)
 
 
 @app.route("/upload", methods=["POST"])
 def upload():
+    """Daten vom Client empfangen und speichern"""
     data = request.get_json()
-    if os.path.exists(FILE_PATH):
+    if not data:
+        return jsonify({"status": "error", "message": "Keine Daten gesendet"}), 400
+
+    # Bestehende Daten laden
+    if os.path.exists(JSON_FILE):
         try:
-            with open(FILE_PATH, "r") as f:
+            with open(JSON_FILE, "r") as f:
                 existing = json.load(f)
             if isinstance(existing, dict):
                 existing = [existing]
@@ -33,10 +41,11 @@ def upload():
     else:
         existing = []
 
+    # Neue Daten hinzufügen
     existing.append(data)
 
-    # Speichern im neuen Pfad
-    with open(FILE_PATH, "w") as f:
+    # Speichern
+    with open(JSON_FILE, "w") as f:
         json.dump(existing, f, indent=4)
 
     return jsonify({"status": "ok", "saved_entries": len(existing)}), 200
@@ -44,11 +53,14 @@ def upload():
 
 @app.route("/data")
 def data():
-    if not os.path.exists(FILE_PATH):
+    """Gespeicherte JSON-Daten zurückgeben"""
+    if not os.path.exists(JSON_FILE):
         return jsonify([])
-    with open(FILE_PATH, "r") as f:
+    with open(JSON_FILE, "r") as f:
         return jsonify(json.load(f))
 
 
+# --- Server starten ---
 if __name__ == "__main__":
+    # 0.0.0.0 erlaubt Zugriff aus dem LAN
     app.run(host="0.0.0.0", port=5000)

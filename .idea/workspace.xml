@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Raspberry server">
+    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Raspberry server 2.0">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Kirill_Website/public.html" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/public.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
     </list>
@@ -150,7 +149,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1759831010212</updated>
-      <workItem from="1761633412515" duration="8341000" />
+      <workItem from="1761633412515" duration="9150000" />
     </task>
     <task id="LOCAL-00001" summary="1.0">
       <option name="closed" value="true" />
@@ -176,7 +175,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761641821681</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Raspberry server 2.0">
+      <option name="closed" value="true" />
+      <created>1761644708528</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1761644708528</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -186,7 +193,8 @@
     <MESSAGE value="1.0" />
     <MESSAGE value="website anfänge" />
     <MESSAGE value="Raspberry server" />
-    <option name="LAST_COMMIT_MESSAGE" value="Raspberry server" />
+    <MESSAGE value="Raspberry server 2.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="Raspberry server 2.0" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/SIA$python__m_pip_install___upgrade_pip_setuptools_wheel.coverage" NAME="python -m pip install --upgrade pip setuptools wheel Coverage Results" MODIFIED="1761640837485" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
