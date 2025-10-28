@@ -5,23 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="1.0">
-      <change afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/json/summary.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/log/log.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/device.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/raspberry.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Python/SIA/SIA_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Python/SIA/SIA_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Python/SIA/SIA_webside/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Python/SIA/log.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Python/SIA/summary.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/SIA.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SIA.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SIA_webside/common/log/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/SIA_webside/common/log/log.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,20 +45,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.SIA_test.executor": "Run",
-    "Python.device.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/MezdaOgu/Desktop/Python/SIA",
-    "settings.editor.selected.configurable": "configurable.group.build"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.SIA_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.device.executor&quot;: &quot;Run&quot;,
+    &quot;Python.python -m pip install --upgrade pip setuptools wheel.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/MezdaOgu/Desktop/Python/SIA&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\MezdaOgu\Desktop\Python\SIA" />
@@ -86,14 +76,48 @@
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="python.exe -m pip install --upgrade pip" />
+      <command value="pip install flask" />
+      <command value="python -m pip install --upgrade pip setuptools wheel " />
       <command value="pip install pygame" />
+      <command value="pip install setuptools" />
       <command value="pip install requests" />
+      <command value="pip install pygame --prefer-binary" />
     </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="python -m pip install --upgrade pip setuptools wheel" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="SIA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="pip" />
+      <option name="PARAMETERS" value="install --upgrade pip setuptools wheel" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.python -m pip install --upgrade pip setuptools wheel" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-b3d66beaba9a-c6efb3732140-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.26199.168" />
+        <option value="bundled-python-sdk-4e2b1448bda8-9a97661f3031-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.27397.106" />
       </set>
     </attachedChunks>
   </component>
@@ -116,8 +140,15 @@
     <option name="localTasksCounter" value="2" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1.0" />
     <option name="LAST_COMMIT_MESSAGE" value="1.0" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/SIA$python__m_pip_install___upgrade_pip_setuptools_wheel.coverage" NAME="python -m pip install --upgrade pip setuptools wheel Coverage Results" MODIFIED="1761574864557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SIA$device.coverage" NAME="device Coverage Results" MODIFIED="1761574755965" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
