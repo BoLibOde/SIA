@@ -25,10 +25,16 @@ h1 {
 
 .diagramme{
 	position: absolute;
-	top:;
+	top:125px;
 	left:200px;
 }
 
 .box {
     border: 2px solid black;
  }
+
+.centrieren{
+    margin-left: auto;
+    margin-right: auto;
+
+}

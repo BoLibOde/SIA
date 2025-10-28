@@ -1,6 +1,6 @@
 // ---------------- Daten definieren ----------------
 const barDatasets = [
-  { data: [50, 15, 10] },   // Allgemein
+  { data: [] },   // Allgemein
   { data: [30, 4, 2] },     // Werk
   { data: [5, 50, 100] }    // Büro
 ];
@@ -40,6 +40,18 @@ const barConfig = {
 };
 
 const barChart = new Chart(document.getElementById('myChart'), barConfig);
+
+fetch('common/json/summary.json')
+  .then(response => response.json())
+  .then(jsonData => {
+    // Werte aus JSON in das erste Dataset eintragen
+    barDatasets[0].data = [jsonData.good, jsonData.meh, jsonData.bad];
+
+    // Säulendiagramm aktualisieren
+    barChart.data.datasets[0].data = barDatasets[0].data;
+    barChart.update();
+  })
+  .catch(error => console.error('Fehler beim Laden der JSON:', error));
 
 // ---------------- Liniendiagramm ----------------
 const lineData = {
