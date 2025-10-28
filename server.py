@@ -15,7 +15,7 @@ os.makedirs(os.path.dirname(JSON_FILE), exist_ok=True)
 @app.route("/")
 def index():
     # index.html ausliefern
-    return send_from_directory(BASE_DIR, "index.html")
+    return send_from_directory(BASE_DIR, "public.html")
 
 @app.route("/common/<path:path>")
 def serve_common(path):
