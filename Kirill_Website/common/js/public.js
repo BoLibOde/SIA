@@ -57,7 +57,7 @@ fetch('common/json/summary.json')
 const lineData = {
   labels: ['Gut', 'Meh', 'Schlecht'],
   datasets: [{
-    label: 'Messwerte',
+    label: '°C',
     data: lineDatasets[0].data,
     borderColor: 'blue',
     backgroundColor: 'rgba(0,0,255,0.1)',
@@ -74,7 +74,7 @@ const lineConfig = {
     maintainAspectRatio: false,
     plugins: {
       legend: { display: true },
-      title: { display: true, text: 'Liniendiagramm der Werte' }
+      title: { display: true, text: 'Temperatur bei ebmpapst' }
     },
     scales: {
       y: { beginAtZero: true }

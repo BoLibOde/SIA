@@ -5,38 +5,50 @@
   <title>Stimmungsbarometer</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="common/css/public.css">
+  <link rel="icon" type="image/png" href="common/images/icon.png">
 </head>
 <body>
   <main class="page">
     <header class="page-header">
-      <h1>Stimmung bei ebmPapst</h1>
+        <img src="common/images/logo.svg" alt="Logo" class="logo">
+      <h1> Stimmung bei <span class="black">ebm</span><span class="blue">papst</span> </h1>
     </header>
-      <table class="centrieren" style="cursor:pointer;">
-          <tr>
-            <td>Jetzt</td>
-            <td>Tag</td>
-            <td>Woche</td>
-          </tr>
 
+    <!-- Zeitabschnitt-Auswahl -->
+    <section class="zeitraum">
+      <table class="centrieren">
+        <tr>
+          <td>Jetzt</td>
+          <td>Tag</td>
+          <td>Woche</td>
+          <td>Monat</td>
+          <td>Jahr</td>
+        </tr>
       </table>
-	
-	<div class="links">
-		<table style="cursor:pointer;">
-			<tr>	<th>Abteilungen</th>	</tr>
-			<tr onclick="updateCharts(0)">	<td>Allgemein</td>	</tr>
-			<tr onclick="updateCharts(1)">	<td>Werk</td>	</tr>
-			<tr onclick="updateCharts(2)">	<td>Büro</td>	</tr>
-		</table>
-	</div>
-	<div class="diagramme box">
-        <div>
-            <canvas id="myChart" class="säule box"></canvas>
+    </section>
+
+    <!-- Hauptinhalt -->
+    <section class="inhalt">
+      <aside class="links">
+        <table>
+          <tr><th>Abteilungen</th></tr>
+          <tr onclick="updateCharts(0)"><td>Allgemein</td></tr>
+          <tr onclick="updateCharts(1)"><td>Werk</td></tr>
+          <tr onclick="updateCharts(2)"><td>Büro</td></tr>
+        </table>
+      </aside>
+
+      <div class="diagramme">
+        <div class="chart-container">
+          <canvas id="myChart" class="säule box"></canvas>
         </div>
-        <div>
-            <canvas id="lineChart" class="linie box"></canvas>
+        <div class="chart-container">
+          <canvas id="lineChart" class="linie box"></canvas>
         </div>
-	</div>	 
+      </div>
+    </section>
   </main>
+
   <script src="common/js/public.js"></script>
 </body>
 </html>
