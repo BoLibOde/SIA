@@ -7,7 +7,7 @@ from datetime import datetime
 import time
 
 pygame.init()
-screen = pygame.display.set_mode((400, 400))
+screen = pygame.display.set_mode((1200, 800))
 pygame.display.set_caption("Stimmungs-Single-Smiley")
 clock = pygame.time.Clock()
 FPS = 30
@@ -19,9 +19,9 @@ def load_svg(svg_path, scale=20):
     return image
 
 # --- SVG Smileys laden ---
-good_smiley = load_svg("Media/good.svg", scale=20)
-meh_smiley = load_svg("Media/meh.svg", scale=20)
-bad_smiley = load_svg("Media/bad.svg", scale=20)
+good_smiley = load_svg("/home/bOde/Desktop/SIA/Media/good.svg", scale=20)
+meh_smiley = load_svg("/home/bOde/Desktop/SIA/Media/meh.svg", scale=20)
+bad_smiley = load_svg("/home/bOde/Desktop/SIA/Media/bad.svg", scale=20)
 
 # --- Tagesdurchschnitt laden ---
 def load_daily_totals():
@@ -86,7 +86,7 @@ while running:
 
     # --- Zeichnen ---
     screen.fill((0,0,0))
-    rect = current_smiley.get_rect(center=(200,200))
+    rect = current_smiley.get_rect(center=(screen.get_width()//2, screen.get_height()//2))
     screen.blit(current_smiley, rect)
 
     # --- Optional: Zähler anzeigen ---
