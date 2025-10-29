@@ -7,18 +7,25 @@ body {
   padding: 0;
 }
 
-/* Hauptüberschrift */
+/* Überschrift */
 h1 {
   text-align: center;
   margin-top: 2rem;
   color: #004a7c;
   font-size: 2rem;
-  letter-spacing: 0.5px;
 }
 
-/* Zentrierte Tabellen (z. B. Zeiträume) */
+h1 .black {
+  color: black; /* für "ebm" */
+}
+
+h1 .blue {
+  color: #007cbc; /* hellblau für "papst" */
+}
+
+/* Zeitabschnittsauswahl */
 .centrieren {
-  margin: 1.5rem auto;
+  margin: 1.5rem auto 2rem auto;
   border-collapse: collapse;
 }
 
@@ -36,23 +43,33 @@ h1 {
   cursor: pointer;
 }
 
-/* Layoutstruktur */
+/* Gesamte Seitenstruktur */
 .page {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1rem 2rem 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* Sidebar links */
+/* Hauptinhalt (Sidebar + Diagramme nebeneinander) */
+.inhalt {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Seitenmenü (links) */
 .links {
-  position: absolute;
-  top: 120px;
-  left: 40px;
-  background: white;
-  border-radius: 10px;
+  background: #ffffff;
+  border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   padding: 1rem;
-  width: 180px;
+  width: 220px;
+  flex-shrink: 0;
 }
 
 .links table {
@@ -80,27 +97,50 @@ h1 {
   cursor: pointer;
 }
 
-/* Diagrammbereich */
+/* Diagramme rechts */
 .diagramme {
-  position: absolute;
-  top: 120px;
-  left: 260px;
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
+  justify-content: flex-start;
 }
 
+/* Wrapper für Diagramme + Luftqualitätsanzeige */
+.diagramme-wrapper {
+  display: flex;
+  gap: 2rem; /* Abstand zwischen Diagrammen und Smiley-Box */
+  align-items: flex-start;
+}
+
+/* Diagramm-Karten */
 .chart-container {
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   padding: 1rem;
+  min-height: 200px; /* vorher 400px, jetzt höher für Datenanzeige */
+  display: flex;
+  flex-direction: column; /* wichtig für Diagramm + Datenanzeige */
+  justify-content: flex-start;
+}
+.chart-data {
+  margin-top: 20px;
+  text-align: left;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif; /* gleiche Schrift */
+  font-weight: 600;       /* gleiche Gewichtung */
+  color: #004a7c;         /* gleiche Farbe wie Tabellenüberschrift oder wähle #222 für Textfarbe */
+  font-size: 1rem;        /* passt zur Tabelle */
 }
 
-/* Diagramm-Boxen */
-.säule, .linie {
-  width: 480px;
-  height: 380px;
+.chart-data p {
+  margin: 4px 0;
+}
+
+.säule,
+.linie {
+  width: 500px;
+  height: 400px;
 }
 
 .box {
@@ -112,3 +152,47 @@ h1 {
 .box:hover {
   box-shadow: 0 4px 14px rgba(0,0,0,0.1);
 }
+
+.logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 150px;
+  height: auto;
+}
+
+/* Luftqualitäts-Box rechts neben Diagrammen */
+#luftqualitaet-box {
+  text-align: center;
+  background: white;
+  padding: 30px 50px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  flex-shrink: 0; /* verhindert Schrumpfen */
+    max-width: 250px;
+}
+
+/* Smileys */
+.smiley-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.smiley {
+  font-size: 80px;
+  transition: transform 0.3s, filter 0.3s, text-shadow 0.3s;
+  filter: grayscale(1);
+}
+
+.active {
+  transform: scale(1.2);
+  filter: none;
+  text-shadow: 0 0 35px currentColor;
+}
+
+.green { color: #22c55e; }
+.yellow { color: #eab308; }
+.red { color: #ef4444; }
