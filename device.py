@@ -1,58 +1,27 @@
 import pygame
-import os
+import cairosvg
+import io
 import json
+import os
 from datetime import datetime
-import random
 import time
 
 pygame.init()
 screen = pygame.display.set_mode((400, 400))
 pygame.display.set_caption("Stimmungs-Single-Smiley")
 clock = pygame.time.Clock()
-font = pygame.font.SysFont("Consolas", 20)
+FPS = 30
 
-# --- Pixel-Emotes (höhere Auflösung) ---
-good_emote = [
-    [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-    [1, 0, 1, 0, 0, 0, 1, 0, 1, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 0, 0, 0, 1, 0, 1, 0],
-    [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-    [0, 0, 1, 1, 1, 1, 1, 0, 0, 0]
-]
+# --- Funktion: SVG in Pygame Surface laden ---
+def load_svg(svg_path, scale=20):
+    png_data = cairosvg.svg2png(url=svg_path, scale=scale)
+    image = pygame.image.load(io.BytesIO(png_data)).convert_alpha()
+    return image
 
-meh_emote = [
-    [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-    [1, 0, 1, 0, 0, 0, 1, 0, 1, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 1, 1, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-    [0, 0, 1, 1, 1, 1, 1, 0, 0, 0]
-]
-
-bad_emote = [
-    [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-    [1, 0, 1, 0, 0, 0, 1, 0, 1, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [0, 1, 0, 1, 1, 1, 1, 0, 1, 0],
-    [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
-    [0, 0, 0, 1, 1, 1, 1, 0, 0, 0]
-]
-
-
-def draw_emote(x, y, emote, pixel_size=20):
-    for row_idx, row in enumerate(emote):
-        for col_idx, val in enumerate(row):
-            color = (255, 255, 0) if val else (0, 0, 0)
-            pygame.draw.rect(screen, color,
-                             (x + col_idx * pixel_size, y + row_idx * pixel_size, pixel_size, pixel_size))
-
+# --- SVG Smileys laden ---
+good_smiley = load_svg("Media/good.svg", scale=20)
+meh_smiley = load_svg("Media/meh.svg", scale=20)
+bad_smiley = load_svg("Media/bad.svg", scale=20)
 
 # --- Tagesdurchschnitt laden ---
 def load_daily_totals():
@@ -64,17 +33,14 @@ def load_daily_totals():
             try:
                 return json.load(f)
             except:
-                return {"good": 0, "meh": 0, "bad": 0}
-    return {"good": 0, "meh": 0, "bad": 0}
-
+                return {"good":0,"meh":0,"bad":0}
+    return {"good":0,"meh":0,"bad":0}
 
 # --- Variablen ---
 current_smiley = None
 smiley_override_time = 0
 SMILEY_OVERRIDE_DURATION = 3  # Sekunden
 good = meh = bad = 0
-
-FPS = 30
 
 running = True
 while running:
@@ -86,50 +52,51 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_g:
                 good += 1
-                current_smiley = good_emote
+                current_smiley = good_smiley
                 smiley_override_time = current_time
             elif event.key == pygame.K_m:
                 meh += 1
-                current_smiley = meh_emote
+                current_smiley = meh_smiley
                 smiley_override_time = current_time
             elif event.key == pygame.K_b:
                 bad += 1
-                current_smiley = bad_emote
+                current_smiley = bad_smiley
                 smiley_override_time = current_time
-            elif event.key == pygame.K_BACKSPACE:
-                good = meh = bad = 0
             elif event.key == pygame.K_RETURN:
+                # Tageswerte speichern
                 totals = load_daily_totals()
-                totals["good"] = totals.get("good", 0) + good
-                totals["meh"] = totals.get("meh", 0) + meh
-                totals["bad"] = totals.get("bad", 0) + bad
+                totals["good"] = totals.get("good",0) + good
+                totals["meh"] = totals.get("meh",0) + meh
+                totals["bad"] = totals.get("bad",0) + bad
                 os.makedirs(os.path.dirname(os.path.join("data", datetime.now().strftime("%Y/%m/%d"))), exist_ok=True)
                 with open(os.path.join("data", datetime.now().strftime("%Y/%m/%d/totals.json")), "w") as f:
                     json.dump(totals, f, indent=4)
                 good = meh = bad = 0
 
-    # --- Smiley-Logik ---
+    # --- Smiley-Logik: Tagesdurchschnitt ---
     if current_smiley is None or (current_time - smiley_override_time > SMILEY_OVERRIDE_DURATION):
         totals = load_daily_totals()
-        max_value = max(totals.get("good", 0), totals.get("meh", 0), totals.get("bad", 0))
-        if max_value == totals.get("good", 0):
-            current_smiley = good_emote
-        elif max_value == totals.get("meh", 0):
-            current_smiley = meh_emote
+        max_value = max(totals.get("good",0), totals.get("meh",0), totals.get("bad",0))
+        if max_value == totals.get("good",0):
+            current_smiley = good_smiley
+        elif max_value == totals.get("meh",0):
+            current_smiley = meh_smiley
         else:
-            current_smiley = bad_emote
+            current_smiley = bad_smiley
 
     # --- Zeichnen ---
-    screen.fill((0, 0, 0))
-    draw_emote(100, 100, current_smiley)
+    screen.fill((0,0,0))
+    rect = current_smiley.get_rect(center=(200,200))
+    screen.blit(current_smiley, rect)
 
-    # --- Zähleranzeige ---
+    # --- Optional: Zähler anzeigen ---
     totals = load_daily_totals()
-    screen.blit(font.render(f"Good: {totals.get('good', 0) + good}", True, (255, 255, 0)), (10, 10))
-    screen.blit(font.render(f"Meh: {totals.get('meh', 0) + meh}", True, (255, 255, 0)), (10, 35))
-    screen.blit(font.render(f"Bad: {totals.get('bad', 0) + bad}", True, (255, 255, 0)), (10, 60))
+    font = pygame.font.SysFont("Consolas", 20)
+    screen.blit(font.render(f"G: {totals.get('good',0)+good}", True, (0,255,0)), (10,10))
+    screen.blit(font.render(f"M: {totals.get('meh',0)+meh}", True, (255,165,0)), (10,35))
+    screen.blit(font.render(f"B: {totals.get('bad',0)+bad}", True, (255,0,0)), (10,60))
 
     pygame.display.flip()
     clock.tick(FPS)
-    print("eh")
+
 pygame.quit()
