@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="neuer stand" />
+    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Moritz: test">
+      <change afterPath="$PROJECT_DIR$/Kirill_Website/common/images/fan.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Moritz_SQL/images/logo_ebmpapst.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Moritz_SQL/images/logo_greentech.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Moritz_SQL/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Moritz_SQL/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_10_2025_10_25__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kirill_Website/public.html" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/public.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +25,7 @@
       <list>
         <option value="Jupyter Notebook" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -31,7 +42,7 @@
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/BoLibOde/SIA.git",
-    "accountId": "99323cd6-452c-48db-83c6-bcae32963ad5"
+    "accountId": "2d350f26-5347-4aec-828b-43d250a07651"
   }
 }]]></component>
   <component name="ProjectColorInfo">{
@@ -45,6 +56,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python.SIA_test.executor": "Run",
     "Python.device.executor": "Run",
@@ -56,7 +68,7 @@
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "master",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/MezdaOgu/Desktop/Python/SIA",
+    "last_opened_file_path": "C:/Users/FallerMor/PycharmProjects/SIA/Moritz_SQL",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -68,9 +80,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\FallerMor\PycharmProjects\SIA\Moritz_SQL" />
       <recent name="C:\Users\MezdaOgu\Desktop\Python\SIA" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\FallerMor\PycharmProjects\SIA\Moritz_SQL\images" />
       <recent name="C:\Users\MezdaOgu\Desktop\SIA\Kirill_Website\common\images" />
       <recent name="C:\Users\MezdaOgu\Desktop\SIA\Kirill_Website\common\json" />
       <recent name="C:\Users\MezdaOgu\Desktop\snow\back-end" />
@@ -94,7 +108,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.11 (SIA)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -125,7 +138,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1759831010212</updated>
-      <workItem from="1761734406799" duration="1427000" />
+      <workItem from="1761734406799" duration="1090000" />
+      <workItem from="1761739807098" duration="2965000" />
     </task>
     <task id="LOCAL-00001" summary="1.0">
       <option name="closed" value="true" />
@@ -151,15 +165,7 @@
       <option name="project" value="LOCAL" />
       <updated>1761652120773</updated>
     </task>
-    <task id="LOCAL-00004" summary="neuer stand">
-      <option name="closed" value="true" />
-      <created>1761737884657</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1761737884657</updated>
-    </task>
-    <option name="localTasksCounter" value="5" />
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -168,8 +174,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1.0" />
     <MESSAGE value="Website_2.1" />
-    <MESSAGE value="neuer stand" />
-    <option name="LAST_COMMIT_MESSAGE" value="neuer stand" />
+    <option name="LAST_COMMIT_MESSAGE" value="Website_2.1" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/SIA$dummy_generator.coverage" NAME="dummy_generator Coverage Results" MODIFIED="1761730088142" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
