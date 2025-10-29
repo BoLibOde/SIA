@@ -1,27 +1,19 @@
 import pygame
-import cairosvg
-import io
 import json
 import os
 from datetime import datetime
 import time
 
 pygame.init()
-screen = pygame.display.set_mode((1200, 800))
+screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Stimmungs-Single-Smiley")
 clock = pygame.time.Clock()
 FPS = 30
 
-# --- Funktion: SVG in Pygame Surface laden ---
-def load_svg(svg_path, scale=20):
-    png_data = cairosvg.svg2png(url=svg_path, scale=scale)
-    image = pygame.image.load(io.BytesIO(png_data)).convert_alpha()
-    return image
-
-# --- SVG Smileys laden ---
-good_smiley = load_svg("/home/bOde/Desktop/SIA/Media/good.svg", scale=20)
-meh_smiley = load_svg("/home/bOde/Desktop/SIA/Media/meh.svg", scale=20)
-bad_smiley = load_svg("/home/bOde/Desktop/SIA/Media/bad.svg", scale=20)
+# --- PNG Smileys laden ---
+good_smiley = pygame.image.load("Media/good.png").convert_alpha()
+meh_smiley  = pygame.image.load("Media/meh.png").convert_alpha()
+bad_smiley  = pygame.image.load("Media/bad.png").convert_alpha()
 
 # --- Tagesdurchschnitt laden ---
 def load_daily_totals():
@@ -41,6 +33,7 @@ current_smiley = None
 smiley_override_time = 0
 SMILEY_OVERRIDE_DURATION = 3  # Sekunden
 good = meh = bad = 0
+font = pygame.font.SysFont("Consolas", 24)
 
 running = True
 while running:
@@ -63,13 +56,13 @@ while running:
                 current_smiley = bad_smiley
                 smiley_override_time = current_time
             elif event.key == pygame.K_RETURN:
-                # Tageswerte speichern
                 totals = load_daily_totals()
                 totals["good"] = totals.get("good",0) + good
                 totals["meh"] = totals.get("meh",0) + meh
                 totals["bad"] = totals.get("bad",0) + bad
-                os.makedirs(os.path.dirname(os.path.join("data", datetime.now().strftime("%Y/%m/%d"))), exist_ok=True)
-                with open(os.path.join("data", datetime.now().strftime("%Y/%m/%d/totals.json")), "w") as f:
+                dir_path = os.path.join("data", datetime.now().strftime("%Y/%m/%d"))
+                os.makedirs(dir_path, exist_ok=True)
+                with open(os.path.join(dir_path, "totals.json"), "w") as f:
                     json.dump(totals, f, indent=4)
                 good = meh = bad = 0
 
@@ -85,16 +78,15 @@ while running:
             current_smiley = bad_smiley
 
     # --- Zeichnen ---
-    screen.fill((0,0,0))
+    screen.fill((30,30,30))  # dunkler Hintergrund
     rect = current_smiley.get_rect(center=(screen.get_width()//2, screen.get_height()//2))
     screen.blit(current_smiley, rect)
 
-    # --- Optional: Zähler anzeigen ---
+    # --- Zähler anzeigen ---
     totals = load_daily_totals()
-    font = pygame.font.SysFont("Consolas", 20)
     screen.blit(font.render(f"G: {totals.get('good',0)+good}", True, (0,255,0)), (10,10))
-    screen.blit(font.render(f"M: {totals.get('meh',0)+meh}", True, (255,165,0)), (10,35))
-    screen.blit(font.render(f"B: {totals.get('bad',0)+bad}", True, (255,0,0)), (10,60))
+    screen.blit(font.render(f"M: {totals.get('meh',0)+meh}", True, (255,165,0)), (10,40))
+    screen.blit(font.render(f"B: {totals.get('bad',0)+bad}", True, (255,0,0)), (10,70))
 
     pygame.display.flip()
     clock.tick(FPS)
