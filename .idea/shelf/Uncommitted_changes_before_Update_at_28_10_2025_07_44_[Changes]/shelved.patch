@@ -1,0 +1,70 @@
+Index: .idea/SIA.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <excludeFolder url=\"file://$MODULE_DIR$/.venv\" />\r\n    </content>\r\n    <orderEntry type=\"jdk\" jdkName=\"Python 3.13\" jdkType=\"Python SDK\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n    <orderEntry type=\"module\" module-name=\"Python\" />\r\n    <orderEntry type=\"module\" module-name=\"snow\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/SIA.iml b/.idea/SIA.iml
+--- a/.idea/SIA.iml	(revision 01a8c9b30d2eb15a97d159a5578d73b0044f14c4)
++++ b/.idea/SIA.iml	(date 1761603159181)
+@@ -4,7 +4,7 @@
+     <content url="file://$MODULE_DIR$">
+       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+     </content>
+-    <orderEntry type="jdk" jdkName="Python 3.13" jdkType="Python SDK" />
++    <orderEntry type="jdk" jdkName="Python 3.13 (SIA)" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+     <orderEntry type="module" module-name="Python" />
+     <orderEntry type="module" module-name="snow" />
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"3ce9279d-9855-49d3-8053-51091393adfc\" name=\"Changes\" comment=\"1.0\">\r\n      <change afterPath=\"$PROJECT_DIR$/../Python/SIA/SIA_webside/common/json/summary.json\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/../Python/SIA/SIA_webside/common/log/log.txt\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.gitignore\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/device.py\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/raspberry.txt\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/server.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../Python/SIA/SIA_test.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../Python/SIA/SIA_test.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../Python/SIA/SIA_webside/common/css/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../Python/SIA/SIA_webside/common/css/style.css\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../Python/SIA/SIA_webside/common/js/app.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../Python/SIA/SIA_webside/common/js/app.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../Python/SIA/SIA_webside/index.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../Python/SIA/SIA_webside/index.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../Python/SIA/log.txt\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../Python/SIA/summary.json\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/SIA.iml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/SIA.iml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/modules.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/modules.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/vcs.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/vcs.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/SIA_webside/common/log/log.txt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/SIA_webside/common/log/log.txt\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Jupyter Notebook\" />\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"ROOT_SYNC\" value=\"DONT_SYNC\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;BoLibOde&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/BoLibOde/Python.git&quot;,\r\n    &quot;accountId&quot;: &quot;b272f612-d4a6-4569-8f49-33f0fbb804bb&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 8\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"33jWYY4tLWcfmSey1xllrWTyxuQ\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"ModuleVcsDetector.initialDetectionPerformed\": \"true\",\r\n    \"Python.SIA_test.executor\": \"Run\",\r\n    \"Python.device.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"dart.analysis.tool.window.visible\": \"false\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"last_opened_file_path\": \"C:/Users/MezdaOgu/Desktop/Python/SIA\",\r\n    \"settings.editor.selected.configurable\": \"configurable.group.build\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\MezdaOgu\\Desktop\\Python\\SIA\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\MezdaOgu\\Desktop\\snow\\back-end\" />\r\n      <recent name=\"C:\\Users\\MezdaOgu\\Desktop\\SIA\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunAnythingCache\">\r\n    <option name=\"myCommands\">\r\n      <command value=\"python.exe -m pip install --upgrade pip\" />\r\n      <command value=\"pip install pygame\" />\r\n      <command value=\"pip install requests\" />\r\n    </option>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-b3d66beaba9a-c6efb3732140-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.26199.168\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"3ce9279d-9855-49d3-8053-51091393adfc\" name=\"Changes\" comment=\"\" />\r\n      <created>1759831010212</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1759831010212</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"1.0\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1759831166670</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1759831166670</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"1.0\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"1.0\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 01a8c9b30d2eb15a97d159a5578d73b0044f14c4)
++++ b/.idea/workspace.xml	(date 1761603651139)
+@@ -5,23 +5,8 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="1.0">
+-      <change afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/json/summary.json" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/log/log.txt" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/device.py" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/raspberry.txt" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../Python/SIA/SIA_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Python/SIA/SIA_test.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/css/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/common/js/app.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../Python/SIA/SIA_webside/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Python/SIA/SIA_webside/index.html" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../Python/SIA/log.txt" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../Python/SIA/summary.json" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/SIA.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SIA.iml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/SIA_webside/common/log/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/SIA_webside/common/log/log.txt" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -113,7 +98,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1759831166670</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="1.0">
++      <option name="closed" value="true" />
++      <created>1761574391904</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1761574391904</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="VcsManagerConfiguration">
