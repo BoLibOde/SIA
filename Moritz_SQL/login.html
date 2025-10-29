@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Login</h1>
+    <?php if ($error) echo "<p class='error'>$error</p>"; ?>
+     <a href="https://www.ebmpapst.com/de/de/home.html" target="_blank">
+            <img src="images/logo_ebmpapst.svg" alt="Logo" class="logo_ebmpapst">
+     </a>
+    <a href="https://www.ebmpapst.com/ch/de/industries/refrigeration/gas-and-oil.html?gad_source=1&gad_campaignid=1082961787&gbraid=0AAAAADBxLs-Bh15hT0gZGzmy69SCtKysH&gclid=Cj0KCQjw9obIBhCAARIsAGHm1mRrAdygzQA3tx0DiBtOuW0jEfJl8nNHKGRJZovtr6N517PVqgfRSpkaAhi1EALw_wcB" target="_blank">
+            <img src="images/logo_greentech.png" alt="Logo" class="logo_greentech">
+     </a>
+    <a href="" target="_blank">
+            <img src="images/logo_greentech.png" alt="Logo" class="logo_greentech">
+     </a>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Benutzername" required><br>
+        <input type="password" name="password" placeholder="Passwort" required><br><br>
+        <button type="submit">Einloggen</button>
+    </form>
+    <p><a href="register.php">Noch kein Konto? Registrieren</a></p>
+</body>
+</html>
