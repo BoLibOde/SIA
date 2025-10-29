@@ -10,7 +10,10 @@
 <body>
   <main class="page">
     <header class="page-header">
-        <img src="common/images/logo.svg" alt="Logo" class="logo">
+        <a href="https://www.ebmpapst.com/de/de/products/blowers/exhaust-blowers.html?gad_source=1&gad_campaignid=10803312610&gclid=Cj0KCQjw9obIBhCAARIsAGHm1mQF5Hx2Sscs8VcPqkbq64Lg5HisrsT1_lgaD2I5GALYvjnrrrUyO3IaAuD8EALw_wcB" target="_blank">
+            <img src="common/images/logo.svg" alt="Logo" class="logo">
+        </a>
+
       <h1> Stimmung bei <span class="black">ebm</span><span class="blue">papst</span> </h1>
     </header>
 
@@ -38,17 +41,41 @@
         </table>
       </aside>
 
-      <div class="diagramme">
-        <div class="chart-container">
-          <canvas id="myChart" class="säule box"></canvas>
+
+
+      <!-- Wrapper für Diagramme + Luftqualitätsanzeige -->
+      <div class="diagramme-wrapper">
+        <div class="diagramme">
+          <div class="chart-container">
+            <canvas id="myChart" class="säule box"></canvas>
+              <div class="chart-data">
+                  <p>Gut: <span id="total-good">0</span></p>
+                  <p>Meh: <span id="total-moderate">0</span></p>
+                  <p>Schlecht: <span id="total-bad">0</span></p>
+                  <p>Abstimmungen: <span id="total-votes">0</span></p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="lineChart" class="linie box"></canvas>
+          </div>
         </div>
-        <div class="chart-container">
-          <canvas id="lineChart" class="linie box"></canvas>
+
+        <!-- Luftqualitätsanzeige rechts vom Diagramm -->
+        <div id="luftqualitaet-box">
+          <h2>Luftqualität</h2>
+          <p id="status-text">Wird geladen...</p>
+
+          <div class="smiley-container">
+            <span id="good" class="smiley green">😊</span>
+            <span id="moderate" class="smiley yellow">😐</span>
+            <span id="bad" class="smiley red">☹️</span>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
-  <script src="common/js/public.js"></script>
+  <script src="common/js/public.js" defer></script>
+  <script src="common/js/smiley.js" defer></script>
 </body>
 </html>

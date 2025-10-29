@@ -106,12 +106,35 @@ h1 .blue {
   justify-content: flex-start;
 }
 
+/* Wrapper für Diagramme + Luftqualitätsanzeige */
+.diagramme-wrapper {
+  display: flex;
+  gap: 2rem; /* Abstand zwischen Diagrammen und Smiley-Box */
+  align-items: flex-start;
+}
+
 /* Diagramm-Karten */
 .chart-container {
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   padding: 1rem;
+  min-height: 200px; /* vorher 400px, jetzt höher für Datenanzeige */
+  display: flex;
+  flex-direction: column; /* wichtig für Diagramm + Datenanzeige */
+  justify-content: flex-start;
+}
+.chart-data {
+  margin-top: 20px;
+  text-align: left;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif; /* gleiche Schrift */
+  font-weight: 600;       /* gleiche Gewichtung */
+  color: #004a7c;         /* gleiche Farbe wie Tabellenüberschrift oder wähle #222 für Textfarbe */
+  font-size: 1rem;        /* passt zur Tabelle */
+}
+
+.chart-data p {
+  margin: 4px 0;
 }
 
 .säule,
@@ -137,3 +160,39 @@ h1 .blue {
   width: 150px;
   height: auto;
 }
+
+/* Luftqualitäts-Box rechts neben Diagrammen */
+#luftqualitaet-box {
+  text-align: center;
+  background: white;
+  padding: 30px 50px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  flex-shrink: 0; /* verhindert Schrumpfen */
+    max-width: 250px;
+}
+
+/* Smileys */
+.smiley-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.smiley {
+  font-size: 80px;
+  transition: transform 0.3s, filter 0.3s, text-shadow 0.3s;
+  filter: grayscale(1);
+}
+
+.active {
+  transform: scale(1.2);
+  filter: none;
+  text-shadow: 0 0 35px currentColor;
+}
+
+.green { color: #22c55e; }
+.yellow { color: #eab308; }
+.red { color: #ef4444; }

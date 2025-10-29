@@ -17,8 +17,16 @@ const barData = {
   datasets: [{
     label: 'Anzahl der Leute',
     data: barDatasets[0].data,
-    backgroundColor: 'rgba(75, 192, 192, 0.5)',
-    borderColor: 'rgba(75, 192, 192, 1)',
+    backgroundColor: [
+      'rgba(34, 197, 94, 0.5)',   // Grün für "Gut"
+      'rgba(234, 179, 8, 0.5)',   // Gelb für "Meh"
+      'rgba(239, 68, 68, 0.5)'    // Rot für "Schlecht"
+    ],
+    borderColor: [
+      'rgba(34, 197, 94, 1)',
+      'rgba(234, 179, 8, 1)',
+      'rgba(239, 68, 68, 1)'
+    ],
     borderWidth: 1
   }]
 };
@@ -50,6 +58,12 @@ fetch('common/json/summary.json')
     // Säulendiagramm aktualisieren
     barChart.data.datasets[0].data = barDatasets[0].data;
     barChart.update();
+
+    document.getElementById('total-good').textContent = jsonData.good;
+    document.getElementById('total-moderate').textContent = jsonData.meh;
+    document.getElementById('total-bad').textContent = jsonData.bad;
+
+
   })
   .catch(error => console.error('Fehler beim Laden der JSON:', error));
 
@@ -93,4 +107,10 @@ function updateCharts(index) {
   // Liniendiagramm aktualisieren
   lineChart.data.datasets[0].data = lineDatasets[index].data;
   lineChart.update();
+
+  document.getElementById('total-good').textContent = barDatasets[index].data[0];
+  document.getElementById('total-moderate').textContent = barDatasets[index].data[1];
+  document.getElementById('total-bad').textContent = barDatasets[index].data[2];
+
 }
+console.log("public.js wurde geladen ✅");

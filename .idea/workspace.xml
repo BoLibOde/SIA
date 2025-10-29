@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Website_2.1">
+    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Raspberry server 2.3">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Kirill_Website/common/js/public.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/common/js/public.js" afterDir="false" />
@@ -23,6 +23,17 @@
       </list>
     </option>
   </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
@@ -33,12 +44,12 @@
     &quot;assignee&quot;: &quot;BoLibOde&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/BoLibOde/Python.git&quot;,
-    &quot;accountId&quot;: &quot;b272f612-d4a6-4569-8f49-33f0fbb804bb&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/BoLibOde/SIA.git",
+    "accountId": "99323cd6-452c-48db-83c6-bcae32963ad5"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -47,27 +58,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.SIA_test.executor&quot;: &quot;Run&quot;,
-    &quot;Python.device.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/MezdaOgu/Desktop/Python/SIA&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.SIA_test.executor": "Run",
+    "Python.device.executor": "Run",
+    "Python.python -m pip install --upgrade pip setuptools wheel.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/kiril/PycharmProjects/SIA",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\kiril\PycharmProjects\SIA" />
       <recent name="C:\Users\MezdaOgu\Desktop\Python\SIA" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\MezdaOgu\Desktop\SIA\Kirill_Website\common\images" />
-      <recent name="C:\Users\MezdaOgu\Desktop\SIA\Kirill_Website\common\json" />
       <recent name="C:\Users\MezdaOgu\Desktop\snow\back-end" />
       <recent name="C:\Users\MezdaOgu\Desktop\SIA" />
     </key>
@@ -75,14 +96,50 @@
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="python.exe -m pip install --upgrade pip" />
-      <command value="pip install pygame" />
+      <command value="python -m pip install --upgrade pip setuptools wheel " />
       <command value="pip install requests" />
+      <command value="pip install pygame --prefer-binary" />
+      <command value="pip install flask" />
+      <command value="pip install wheel" />
+      <command value="pip install setuptools" />
+      <command value="pip install pygame" />
     </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="python -m pip install --upgrade pip setuptools wheel" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="SIA" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="pip" />
+      <option name="PARAMETERS" value="install --upgrade pip setuptools wheel" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.python -m pip install --upgrade pip setuptools wheel" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-b3d66beaba9a-c6efb3732140-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.26199.168" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-PY-252.27397.106" />
+        <option value="bundled-python-sdk-4e2b1448bda8-9a97661f3031-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.27397.106" />
       </set>
     </attachedChunks>
   </component>
@@ -93,6 +150,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1759831010212</updated>
+      <workItem from="1761633412515" duration="14241000" />
     </task>
     <task id="LOCAL-00001" summary="1.0">
       <option name="closed" value="true" />
@@ -102,28 +160,80 @@
       <option name="project" value="LOCAL" />
       <updated>1759831166670</updated>
     </task>
-    <task id="LOCAL-00002" summary="1.0">
+    <task id="LOCAL-00002" summary="website anfänge">
       <option name="closed" value="true" />
-      <created>1761643787636</created>
+      <created>1761633614383</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1761643787636</updated>
+      <updated>1761633614383</updated>
     </task>
-    <task id="LOCAL-00003" summary="Website_2.1">
+    <task id="LOCAL-00003" summary="Raspberry server">
       <option name="closed" value="true" />
-      <created>1761652120773</created>
+      <created>1761641821681</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1761652120773</updated>
+      <updated>1761641821681</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Raspberry server 2.0">
+      <option name="closed" value="true" />
+      <created>1761644708528</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1761644708528</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Raspberry server 2.1">
+      <option name="closed" value="true" />
+      <created>1761645519709</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1761645519709</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Raspberry server 2.2">
+      <option name="closed" value="true" />
+      <created>1761646695269</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1761646695269</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Raspberry server 2.2">
+      <option name="closed" value="true" />
+      <created>1761650913678</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1761650913678</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Raspberry server 2.3">
+      <option name="closed" value="true" />
+      <created>1761652185570</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1761652185570</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1.0" />
-    <MESSAGE value="Website_2.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="Website_2.1" />
+    <MESSAGE value="website anfänge" />
+    <MESSAGE value="Raspberry server" />
+    <MESSAGE value="Raspberry server 2.0" />
+    <MESSAGE value="Raspberry server 2.1" />
+    <MESSAGE value="Raspberry server 2.2" />
+    <MESSAGE value="Raspberry server 2.3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Raspberry server 2.3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/SIA$python__m_pip_install___upgrade_pip_setuptools_wheel.coverage" NAME="python -m pip install --upgrade pip setuptools wheel Coverage Results" MODIFIED="1761640837485" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SIA$device.coverage" NAME="device Coverage Results" MODIFIED="1761646837516" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
