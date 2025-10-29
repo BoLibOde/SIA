@@ -131,5 +131,5 @@ while running:
 
     pygame.display.flip()
     clock.tick(FPS)
-
+    print("eh")
 pygame.quit()
