@@ -23,10 +23,10 @@ h1 .blue {
   color: #007cbc; /* hellblau für "papst" */
 }
 
-/* Zeitabschnittsauswahl */
 .centrieren {
+  border-collapse: separate; /* nötig, damit border-spacing wirkt */
+  border-spacing: 1rem;      /* horizontaler Abstand zwischen Zellen */
   margin: 1.5rem auto 2rem auto;
-  border-collapse: collapse;
 }
 
 .centrieren td {
@@ -196,6 +196,137 @@ h1 .blue {
 .green { color: #22c55e; }
 .yellow { color: #eab308; }
 .red { color: #ef4444; }
+
+.top-right-button {
+      position: absolute;         /* bleibt beim Scrollen sichtbar */
+      top: 30px;               /* Abstand von oben */
+      right: 30px;             /* Abstand von rechts */
+      background-color: #007cbc; /* Blau */
+      color: white;            /* weiße Schrift */
+      border: none;            /* kein Rand */
+      padding: 10px 20px;      /* Größe */
+      font-size: 16px;         /* Schriftgröße */
+      border-radius: 5px;      /* leicht abgerundete Ecken */
+      cursor: pointer;         /* Zeiger wird zur Hand */
+      transition: background-color 0.3s ease; /* schöner Hover-Effekt */
+    }
+
+    .top-right-button:hover {
+      background-color: #0056b3; /* dunkleres Blau beim Darüberfahren */
+    }
+
+
+    /* Aktiver Zeitraum-Button */
+.centrieren td.active {
+  background-color: #005f99; /* dunkleres Blau als Standard #007cbc */
+  color: white;
+  font-weight: bold;
+  transform: scale(1.05); /* leichtes Vergrößern wie beim Hover */
+}
+
+/* Aktive Abteilung: volle Zeile, aber 10px Abstand links/rechts */
+.links tr.active td {
+  background-color: #005f99;  /* dunkleres Blau */
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;          /* sanfte Abrundung */
+  padding: 0.5rem 0.8rem;      /* kompakte Höhe */
+  margin-left: 10px;           /* Abstand links */
+  margin-right: 10px;          /* Abstand rechts */
+  transition: all 0.2s ease;
+  box-sizing: border-box;      /* damit padding/margin nicht überlaufen */
+}
+
+/* Hover über aktive Zelle: keine Veränderung */
+.links tr.active td:hover {
+  background-color: #005f99;
+  cursor: pointer;
+  transform: none;
+}
+
+/* Normale Hover-Zellen */
+.links td:hover {
+  background: #f0f7ff;
+  transform: translateX(2px);
+  cursor: pointer;
+}
+
+/* Lautstärke-Box (unter Luftqualität) */
+#lautstaerke-box {
+  text-align: center;
+  background: white;
+  padding: 30px 50px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  flex-shrink: 0;
+  max-width: 250px;
+  margin-top: 20px; /* Abstand zur Luftqualität */
+}
+
+/* Container für Lautstärke-Icons */
+.lautstaerke-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Lautstärke-Symbole */
+.laut-icon {
+  font-size: 45px;
+  color: #aaa; /* grau standardmäßig */
+  transition: all 0.3s ease;
+  filter: grayscale(1);
+}
+
+/* Aktives Symbol farbig */
+.laut-icon.active {
+  filter: none;
+  color: #007cbc;
+  transform: scale(1.1);
+}
+
+/* Hover-Effekt (optional) */
+.laut-icon:hover {
+  transform: scale(1.15);
+  cursor: default;
+}
+
+/* Vollbild-Lade-Overlay */
+#loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7); /* halbtransparentes Weiß */
+  display: none; /* standardmäßig ausgeblendet */
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(3px);
+}
+
+/* Drehender Kreis */
+.spinner {
+  border: 8px solid #ddd;
+  border-top: 8px solid #0078d4; /* ebmpapst-Blau */
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  animation: spin 1s linear infinite;
+}
+
+/* Dreh-Animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
+
+
 
 
 

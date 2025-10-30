@@ -4,12 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Website_2.8">
-      <change afterPath="$PROJECT_DIR$/server_dummy_generator.py" afterDir="false" />
+    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="neuer stand">
+      <change afterPath="$PROJECT_DIR$/Kirill_Website/common/js/dataLoader.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website/common/js/lautstaerke.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/css/public.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/images/fan.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/images/icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/images/logo.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/js/public.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/js/smiley.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/json/summary.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/public.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device.py" beforeDir="false" afterPath="$PROJECT_DIR$/device.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dummy_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/dummy_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kirill_Website/common/js/public.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/common/js/public.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kirill_Website/public.html" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/public.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +30,7 @@
       <list>
         <option value="Jupyter Notebook" />
         <option value="Python Script" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -48,38 +58,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.SIA_test.executor": "Run",
-    "Python.device.executor": "Run",
-    "Python.dummy_generator.executor": "Run",
-    "Python.server.executor": "Run",
-    "Python.svg_to_png.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/MezdaOgu/Desktop/SIA/Media",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.SIA_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.device.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dummy_generator.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/MezdaOgu/Desktop/Python/SIA&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\MezdaOgu\Desktop\SIA\Media" />
       <recent name="C:\Users\MezdaOgu\Desktop\Python\SIA" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\kiril\PycharmProjects\SIA\Kirill_Website\common" />
       <recent name="C:\Users\MezdaOgu\Desktop\SIA\Kirill_Website\common\images" />
       <recent name="C:\Users\MezdaOgu\Desktop\SIA\Kirill_Website\common\json" />
       <recent name="C:\Users\MezdaOgu\Desktop\snow\back-end" />
@@ -88,13 +96,9 @@
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
+      <command value="python.exe -m pip install --upgrade pip" />
       <command value="pip install pygame" />
       <command value="pip install requests" />
-      <command value="python.exe -m pip install --upgrade pip" />
-      <command value="pip install cairo-2" />
-      <command value="pip install cairosvg" />
-      <command value="pip install inkscape" />
-      <command value="pip install flask" />
     </option>
   </component>
   <component name="RunManager">
@@ -126,7 +130,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-b3d66beaba9a-c6efb3732140-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.26199.168" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-PY-252.27397.106" />
+        <option value="bundled-python-sdk-4e2b1448bda8-9a97661f3031-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.27397.106" />
       </set>
     </attachedChunks>
   </component>
@@ -137,7 +142,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1759831010212</updated>
-      <workItem from="1761734406799" duration="1090000" />
+      <workItem from="1761734406799" duration="1427000" />
     </task>
     <task id="LOCAL-00001" summary="1.0">
       <option name="closed" value="true" />
@@ -163,89 +168,27 @@
       <option name="project" value="LOCAL" />
       <updated>1761652120773</updated>
     </task>
-    <task id="LOCAL-00004" summary="Website_2.5">
+    <task id="LOCAL-00004" summary="neuer stand">
       <option name="closed" value="true" />
-      <created>1761739478136</created>
+      <created>1761737884657</created>
       <option name="number" value="00004" />
       <option name="presentableId" value="LOCAL-00004" />
       <option name="project" value="LOCAL" />
-      <updated>1761739478136</updated>
+      <updated>1761737884657</updated>
     </task>
-    <task id="LOCAL-00005" summary="Website_2.5">
-      <option name="closed" value="true" />
-      <created>1761740395817</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1761740395817</updated>
-    </task>
-    <task id="LOCAL-00006" summary="Website_2.6">
-      <option name="closed" value="true" />
-      <created>1761741427821</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1761741427824</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Website_2.6">
-      <option name="closed" value="true" />
-      <created>1761741659726</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1761741659726</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Website_2.7">
-      <option name="closed" value="true" />
-      <created>1761746847664</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1761746847664</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Website_2.7">
-      <option name="closed" value="true" />
-      <created>1761746994010</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1761746994010</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Website_2.8">
-      <option name="closed" value="true" />
-      <created>1761807904520</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1761807904520</updated>
-    </task>
-    <option name="localTasksCounter" value="11" />
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1.0" />
     <MESSAGE value="Website_2.1" />
-    <MESSAGE value="Website_2.5" />
-    <MESSAGE value="Website_2.6" />
-    <MESSAGE value="Website_2.7" />
-    <MESSAGE value="Website_2.8" />
-    <option name="LAST_COMMIT_MESSAGE" value="Website_2.8" />
+    <MESSAGE value="neuer stand" />
+    <option name="LAST_COMMIT_MESSAGE" value="neuer stand" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/SIA$dummy_generator.coverage" NAME="dummy_generator Coverage Results" MODIFIED="1761730088142" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SIA$dummy_generator.coverage" NAME="dummy_generator Coverage Results" MODIFIED="1761810746116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
