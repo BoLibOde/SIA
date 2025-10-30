@@ -3,7 +3,7 @@ import json
 import random
 from datetime import datetime, timedelta
 
-BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "server_data")
 os.makedirs(BASE_DIR, exist_ok=True)
 
 

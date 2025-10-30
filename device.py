@@ -9,7 +9,7 @@ from datetime import datetime
 
 # --- Flask-Server ---
 SERVER_URL = "http://127.0.0.1:5000/upload"
-#SERVER_URL = "http://192.168.1.10:5000/upload"
+# SERVER_URL = "http://192.168.1.10:5000/upload"
 
 # --- Upload-Zeiten (Stunden, Minuten) ---
 UPLOAD_TIMES = [(9, 15), (12, 15), (15, 15), (18, 15)]
@@ -49,7 +49,6 @@ smiley_override_time = 0
 SMILEY_OVERRIDE_DURATION = 3
 upload_counter = 0
 
-
 # =========================================================
 # ================ HILFSFUNKTIONEN =========================
 # =========================================================
@@ -65,31 +64,26 @@ def load_daily_totals():
             except:
                 return {"good": 0, "meh": 0, "bad": 0,
                         "avg_sensor_day": {"temp": 0, "db": 0, "co2": 0, "voc": 0, "count": 0}}
-    return {"good": 0, "meh": 0, "bad": 0, "avg_sensor_day": {"temp": 0, "db": 0, "co2": 0, "voc": 0, "count": 0}}
-
+    return {"good": 0, "meh": 0, "bad": 0,
+            "avg_sensor_day": {"temp": 0, "db": 0, "co2": 0, "voc": 0, "count": 0}}
 
 def draw_sensor_values(temp, db, co2, voc, smiley_rect):
-    # Links
     left_texts = [f"Temperatur:", f"{temp:.1f} °C", f"Dezibel:", f"{db:.1f} dB"]
-    # Rechts
     right_texts = [f"CO₂:", f"{co2} ppm", f"VOC:", f"{voc} ppb"]
 
     left_x = smiley_rect.left - 280
     right_x = smiley_rect.right + 60
-    base_y = smiley_rect.top + 20  # etwas nach unten versetzt
+    base_y = smiley_rect.top + 20
 
     for i, line in enumerate(left_texts):
         screen.blit(sensor_font.render(line, True, (255, 255, 255)), (left_x, base_y + i * 40))
     for i, line in enumerate(right_texts):
         screen.blit(sensor_font.render(line, True, (255, 255, 255)), (right_x, base_y + i * 40))
 
-
 def draw_emotes(good, meh, bad, current_smiley):
-    # Smiley leicht nach oben versetzt
     rect = current_smiley.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 50))
     screen.blit(current_smiley, rect)
 
-    # Stimmungen mittig unterhalb des Smileys
     mood_y = rect.bottom + 20
     spacing = 160
     screen.blit(mood_font.render(f"Gut: {good}", True, (0, 255, 0)), (screen.get_width() // 2 - spacing, mood_y))
@@ -97,11 +91,9 @@ def draw_emotes(good, meh, bad, current_smiley):
     screen.blit(mood_font.render(f"Schlecht: {bad}", True, (255, 0, 0)), (screen.get_width() // 2 + 80, mood_y))
     return rect
 
-
 def draw_upload_count():
     text_surface = mood_font.render(f"Uploads heute: {len(upload_history)}", True, (255, 255, 255))
     screen.blit(text_surface, (screen.get_width() // 2 - 100, screen.get_height() - 50))
-
 
 def avg_sensor_values():
     if not sensor_buffer:
@@ -112,9 +104,8 @@ def avg_sensor_values():
     v = sum(s[3] for s in sensor_buffer) / len(sensor_buffer)
     return {"temp": round(t, 1), "db": round(d, 1), "co2": int(c), "voc": int(v)}
 
-
 # =========================================================
-# ================ UPLOAD FUNKTIONEN =====================
+# ================ UPLOAD FUNKTIONEN =======================
 # =========================================================
 
 def upload_to_server(avg_sensor, events):
@@ -128,12 +119,10 @@ def upload_to_server(avg_sensor, events):
     except Exception as e:
         print("⚠️ Upload fehlgeschlagen:", e)
 
-
 def upload_cycle():
     global events, sensor_buffer, upload_counter
     now = datetime.now()
     upload_counter += 1
-
     avg_sensor = avg_sensor_values()
 
     if sensor_buffer:
@@ -177,7 +166,8 @@ def upload_cycle():
                 totals = {"good": 0, "meh": 0, "bad": 0,
                           "avg_sensor_day": {"temp": 0, "db": 0, "co2": 0, "voc": 0, "count": 0}}
     else:
-        totals = {"good": 0, "meh": 0, "bad": 0, "avg_sensor_day": {"temp": 0, "db": 0, "co2": 0, "voc": 0, "count": 0}}
+        totals = {"good": 0, "meh": 0, "bad": 0,
+                  "avg_sensor_day": {"temp": 0, "db": 0, "co2": 0, "voc": 0, "count": 0}}
 
     totals["good"] += good
     totals["meh"] += meh
@@ -187,11 +177,9 @@ def upload_cycle():
     count_new = len(sensor_buffer)
     if count_new > 0:
         totals["avg_sensor_day"]["temp"] = round(
-            (totals["avg_sensor_day"]["temp"] * total_count + avg_sensor["temp"] * count_new) / (
-                        total_count + count_new), 1)
+            (totals["avg_sensor_day"]["temp"] * total_count + avg_sensor["temp"] * count_new) / (total_count + count_new), 1)
         totals["avg_sensor_day"]["db"] = round(
-            (totals["avg_sensor_day"]["db"] * total_count + avg_sensor["db"] * count_new) / (total_count + count_new),
-            1)
+            (totals["avg_sensor_day"]["db"] * total_count + avg_sensor["db"] * count_new) / (total_count + count_new), 1)
         totals["avg_sensor_day"]["co2"] = int(
             (totals["avg_sensor_day"]["co2"] * total_count + avg_sensor["co2"] * count_new) / (total_count + count_new))
         totals["avg_sensor_day"]["voc"] = int(
@@ -202,11 +190,9 @@ def upload_cycle():
         json.dump(totals, f, indent=4)
 
     threading.Thread(target=upload_to_server, args=(avg_sensor, events.copy()), daemon=True).start()
-
     events.clear()
     sensor_buffer.clear()
     upload_history.append((now.strftime("%Y-%m-%d"), upload_counter))
-
 
 def check_scheduled_upload():
     now = datetime.now()
@@ -215,7 +201,6 @@ def check_scheduled_upload():
             today_str = now.strftime("%Y-%m-%d")
             if (not upload_history) or upload_history[-1][0] != today_str or upload_history[-1][1] < idx + 1:
                 upload_cycle()
-
 
 # =========================================================
 # ================ SENSOR SIMULATOR =======================
@@ -232,11 +217,10 @@ def sensor_simulator():
             sensor_buffer.pop(0)
         time.sleep(2)
 
-
 threading.Thread(target=sensor_simulator, daemon=True).start()
 
 # =========================================================
-# ================ PYGAME HAUPTSCHLEIFE ==================
+# ================ PYGAME HAUPTSCHLEIFE ===================
 # =========================================================
 
 good = meh = bad = 0
@@ -263,18 +247,30 @@ while running:
                 smiley_override_time = current_time
                 events.append({"type": "bad", "timestamp": current_time})
             elif event.key == pygame.K_RETURN:
-                # Upload manuell auslösen
                 upload_cycle()
 
+    # --- Smiley-Reset nach 3 Sekunden ---
     if current_time - smiley_override_time > SMILEY_OVERRIDE_DURATION:
         totals = load_daily_totals()
-        max_value = max(totals["good"], totals["meh"], totals["bad"])
-        if max_value == totals["good"]:
-            current_smiley = good_smiley
-        elif max_value == totals["meh"]:
-            current_smiley = meh_smiley
+        g, m, b = totals["good"], totals["meh"], totals["bad"]
+
+        if g == 0 and m == 0 and b == 0:
+            # Wechsel alle 1 Sekunde zwischen good/meh/bad
+            phase = int(current_time) % 3
+            if phase == 0:
+                current_smiley = good_smiley
+            elif phase == 1:
+                current_smiley = meh_smiley
+            else:
+                current_smiley = bad_smiley
         else:
-            current_smiley = bad_smiley
+            max_value = max(g, m, b)
+            if max_value == g:
+                current_smiley = good_smiley
+            elif max_value == m:
+                current_smiley = meh_smiley
+            else:
+                current_smiley = bad_smiley
 
     check_scheduled_upload()
 
