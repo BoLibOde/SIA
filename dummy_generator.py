@@ -12,18 +12,32 @@ def save_upload(year, month, day, upload_number, good, meh, bad, upload_ts, avg_
     dir_path = os.path.join(BASE_DIR, year, month, day)
     os.makedirs(dir_path, exist_ok=True)
 
+    # Sensor-Zeitfenster leicht variieren
+    dt_obj = datetime.strptime(upload_ts, "%Y-%m-%d %H:%M:%S")
+    sensor_window_start = (dt_obj - timedelta(seconds=random.randint(2, 10))).strftime("%Y-%m-%d %H:%M:%S")
+    sensor_window_end = (dt_obj + timedelta(seconds=random.randint(1, 5))).strftime("%Y-%m-%d %H:%M:%S")
+
+    # Dummy-Events
+    event_types = ["good"] * good + ["meh"] * meh + ["bad"] * bad
+    random.shuffle(event_types)
+    events = [{"type": t, "timestamp": (dt_obj - timedelta(seconds=random.randint(0, 600))).timestamp()} for t in event_types]
+
     data = {
         "upload_number": upload_number,
         "upload_Timestamp": upload_ts,
         "good": good,
         "meh": meh,
         "bad": bad,
-        "avg_sensor": avg_sensor
+        "avg_sensor": avg_sensor,
+        "sensor_window_start": sensor_window_start,
+        "sensor_window_end": sensor_window_end,
+        "events": events
     }
 
     file_path = os.path.join(dir_path, f"upload{upload_number}.json")
     with open(file_path, "w") as f:
         json.dump(data, f, indent=4)
+
     return dir_path
 
 
@@ -107,4 +121,4 @@ def generate_dummy_data():
 
 if __name__ == "__main__":
     generate_dummy_data()
-    print("Dummy-Daten mit Sensorwerten erstellt (2025 bis heute).")
+    print("✅ Dummy-Daten mit Sensorwerten erstellt (2025 bis heute).")
