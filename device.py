@@ -5,11 +5,10 @@ import requests
 import threading
 import random
 import os
-import uuid
 from datetime import datetime
 
 # --- Flask-Server ---
-SERVER_URL = "http://127.0.0.1:5000/upload"
+SERVER_URL = "http://192.168.1.10:5000/upload"
 
 # --- Upload-Zeiten (Stunden, Minuten) ---
 UPLOAD_TIMES = [(9, 15), (12, 15), (15, 15), (18, 15)]
@@ -21,15 +20,9 @@ os.makedirs(BASE_DIR, exist_ok=True)
 # =========================================================
 # ================ CLIENT-ID =============================
 # =========================================================
-# Jede Client-ID wird einmal erzeugt und lokal gespeichert
-CLIENT_ID_FILE = os.path.join(BASE_DIR, "client_id.txt")
-if os.path.exists(CLIENT_ID_FILE):
-    with open(CLIENT_ID_FILE, "r") as f:
-        DEVICE_ID = f.read().strip()
-else:
-    DEVICE_ID = str(uuid.uuid4())[:8]  # z.B. "a1b2c3d4"
-    with open(CLIENT_ID_FILE, "w") as f:
-        f.write(DEVICE_ID)
+# Feste Client-ID pro Gerät
+# Beispiel: "Buero", "Montage", "Lehrwerkstatt"
+DEVICE_ID = "Lehrwerkstatt"  # <-- hier den jeweiligen Standortnamen eintragen
 print(f"[INFO] Client-ID: {DEVICE_ID}")
 
 # =========================================================
