@@ -4,20 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="neuer stand">
-      <change afterPath="$PROJECT_DIR$/Kirill_Website/common/js/dataLoader.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kirill_Website/common/js/lautstaerke.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/css/public.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/images/fan.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/images/icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/images/logo.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/js/public.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/js/smiley.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/common/json/summary.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kirill_Website_2.0/public.html" afterDir="false" />
+    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="jajaja">
+      <change afterPath="$PROJECT_DIR$/Kirill_Website/common/js/scrollSpinner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/common/css/public.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Kirill_Website/common/js/public.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/common/js/public.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Kirill_Website/public.html" beforeDir="false" afterPath="$PROJECT_DIR$/Kirill_Website/public.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -143,6 +134,8 @@
       <option name="presentableId" value="Default" />
       <updated>1759831010212</updated>
       <workItem from="1761734406799" duration="1427000" />
+      <workItem from="1761838540710" duration="296000" />
+      <workItem from="1761900536148" duration="6325000" />
     </task>
     <task id="LOCAL-00001" summary="1.0">
       <option name="closed" value="true" />
@@ -176,7 +169,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761737884657</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="jajaja">
+      <option name="closed" value="true" />
+      <created>1761834716624</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1761834716624</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -186,7 +187,8 @@
     <MESSAGE value="1.0" />
     <MESSAGE value="Website_2.1" />
     <MESSAGE value="neuer stand" />
-    <option name="LAST_COMMIT_MESSAGE" value="neuer stand" />
+    <MESSAGE value="jajaja" />
+    <option name="LAST_COMMIT_MESSAGE" value="jajaja" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/SIA$dummy_generator.coverage" NAME="dummy_generator Coverage Results" MODIFIED="1761810746116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

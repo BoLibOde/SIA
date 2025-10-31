@@ -64,6 +64,7 @@ h1 .blue {
 
 /* Seitenmenü (links) */
 .links {
+
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -224,7 +225,7 @@ h1 .blue {
   transform: scale(1.05); /* leichtes Vergrößern wie beim Hover */
 }
 
-/* Aktive Abteilung: volle Zeile, aber 10px Abstand links/rechts */
+/* Aktive Abteilung: volle Zeile, aber 10px Abstand /rechts */
 .links tr.active td {
   background-color: #005f99;  /* dunkleres Blau */
   color: white;
@@ -308,22 +309,75 @@ h1 .blue {
   backdrop-filter: blur(3px);
 }
 
-/* Drehender Kreis */
-.spinner {
-  border: 8px solid #ddd;
-  border-top: 8px solid #0078d4; /* ebmpapst-Blau */
-  border-radius: 50%;
-  width: 70px;
-  height: 70px;
-  animation: spin 1s linear infinite;
+
+
+/* Wrapper unter der Abteilungen-Liste */
+.svg-spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;     /* Abstand unter der Tabelle */
+  width: 100%;
+  pointer-events: none; /* verhindert, dass die SVG Klicks abfängt */
 }
 
-/* Dreh-Animation */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* SVG (als IMG) Styling */
+#scroll-spinner {
+  display: block;
+  width: 120px;         /* Standardgröße — anpassen nach Bedarf */
+  height: auto;
+  opacity: 0.95;
+  transition: transform 0.12s linear, opacity 0.2s ease;
+  will-change: transform;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.06));
 }
 
+/* Kleiner: für schmale Sidebars / mobile */
+@media (max-width: 420px) {
+  #scroll-spinner {
+    width: 90px;
+  }
+}
+
+/* Wenn Benutzer reduzierte Bewegung bevorzugt, keine Animationen */
+@media (prefers-reduced-motion: reduce) {
+  #scroll-spinner {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Optional: leichtes Hover-Highlight (nur visuell, pointer-events still none so no clicks) */
+.svg-spinner-wrapper:hover #scroll-spinner {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+/* Ladeanimation komplett deaktivieren */
+#loader-overlay {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* --- Linke Abteilungsliste fixieren --- */
+aside.links {
+  position: fixed;
+  top: 238px; /* Abstand nach oben (Header-Höhe anpassen) */
+  left: 20px;
+  width: 200px; /* feste Breite, damit Layout stabil bleibt */
+  z-index: 100; /* bleibt über anderem Inhalt */
+  background-color: white; /* Hintergrund, damit nichts durchscheint */
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 10px;
+}
+
+/* --- Hauptinhalt rückt nach rechts --- */
+.diagramme-wrapper {
+  margin-left: 230px; /* Breite von aside.links + etwas Abstand */
+}
 
 
 
