@@ -45,7 +45,8 @@ total.json enthalten:
     "co2": 412,
     "voc": 11,
     "count": 9
-  }
+  },
+    "weekday": "Wednesday"
 }
 
 
