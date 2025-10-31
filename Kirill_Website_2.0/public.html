@@ -8,20 +8,12 @@
   <link rel="icon" type="image/png" href="common/images/icon.png">
 </head>
 <body>
-    <!-- Lade-Overlay -->
-<div id="loader-overlay">
-  <div class="spinner"></div>
-</div>
-
   <main class="page">
     <header class="page-header">
       <a href="https://www.ebmpapst.com/de/de/home.html" target="_blank">
         <img src="common/images/logo.svg" alt="Logo" class="logo">
       </a>
-      <button class="top-right-button" onclick="window.location.href='zielseite.html'">
-        Logout
-      </button>
-      <h1> Stimmung bei <span class="black">ebm</span><span class="blue">papst</span> </h1>
+      <h1>Stimmung bei <span class="black">ebm</span><span class="blue">papst</span></h1>
     </header>
 
     <!-- Zeitabschnitt-Auswahl -->
@@ -38,8 +30,8 @@
     </section>
 
     <!-- Hauptinhalt -->
-    <section class="inhalt">
-      <!-- Linke Seitenleiste -->
+    <section class="inhalt-wrapper">
+      <!-- Sidebar -->
       <aside class="links">
         <table>
           <tr><th>Abteilungen</th></tr>
@@ -49,10 +41,8 @@
         </table>
       </aside>
 
-      <!-- Hauptinhalt mit Diagrammen & Info-Boxen -->
+      <!-- Diagramme + Smiley Box -->
       <div class="diagramme-wrapper">
-
-        <!-- Diagramme -->
         <div class="diagramme">
           <div class="chart-container">
             <canvas id="myChart" class="säule box"></canvas>
@@ -63,36 +53,18 @@
               <p>Abstimmungen: <span id="total-votes">0</span></p>
             </div>
           </div>
-
           <div class="chart-container">
             <canvas id="lineChart" class="linie box"></canvas>
           </div>
         </div>
 
-        <!-- Rechte Infospalte mit Luftqualität + Lautstärke -->
-        <div class="info-spalte">
-          <!-- Luftqualität -->
-          <div id="luftqualitaet-box" class="box">
-            <h2>Luftqualität</h2>
-            <p id="status-text">Wird geladen...</p>
-            <div class="smiley-container">
-              <span id="good" class="smiley green">😊</span>
-              <span id="moderate" class="smiley yellow">😐</span>
-              <span id="bad" class="smiley red">☹️</span>
-            </div>
-          </div>
-
-          <!-- Lautstärkeanzeige direkt darunter -->
-          <div id="lautstaerke-box" class="box">
-            <h2>Lautstärke</h2>
-            <p id="lautstaerke-text">Wird geladen...</p>
-            <div class="lautstaerke-container">
-              <span id="icon-maus" class="laut-icon">🐭</span>
-              <span id="icon-sprechen" class="laut-icon">🗣️</span>
-              <span id="icon-musik" class="laut-icon">🎵</span>
-              <span id="icon-auto" class="laut-icon">🚗</span>
-              <span id="icon-flugzeug" class="laut-icon">✈️</span>
-            </div>
+        <div id="luftqualitaet-box">
+          <h2>Luftqualität</h2>
+          <p id="status-text">Wird geladen...</p>
+          <div class="smiley-container">
+            <span id="good" class="smiley green">😊</span>
+            <span id="moderate" class="smiley yellow">😐</span>
+            <span id="bad" class="smiley red">☹️</span>
           </div>
         </div>
       </div>
@@ -100,8 +72,6 @@
   </main>
 
   <script src="common/js/public.js" defer></script>
-  <script src="common/js/dataLoader.js" defer></script>
   <script src="common/js/smiley.js" defer></script>
-  <script src="common/js/lautstaerke.js" defer></script>
 </body>
 </html>

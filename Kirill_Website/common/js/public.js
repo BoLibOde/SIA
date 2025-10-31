@@ -112,5 +112,7 @@ function updateCharts(index) {
   document.getElementById('total-moderate').textContent = barDatasets[index].data[1];
   document.getElementById('total-bad').textContent = barDatasets[index].data[2];
 
+  document.getElementById('total-votes').textContent = barDatasets[index].data[0] + barDatasets[index].data[1] + barDatasets[index].data[2];
+
 }
 console.log("public.js wurde geladen ✅");
