@@ -8,7 +8,7 @@ import os
 from datetime import datetime
 
 # --- Flask-Server ---
-SERVER_URL = "http://192.168.1.10:5000/upload"
+SERVER_URL = "http://127.0.0.1:5000/upload"
 
 # --- Upload-Zeiten (Stunden, Minuten) ---
 UPLOAD_TIMES = [(9, 15), (12, 15), (15, 15), (18, 15)]
@@ -21,8 +21,7 @@ os.makedirs(BASE_DIR, exist_ok=True)
 # ================ CLIENT-ID =============================
 # =========================================================
 # Feste Client-ID pro Gerät
-# Beispiel: "Buero", "Montage", "Lehrwerkstatt"
-DEVICE_ID = "Lehrwerkstatt"  # <-- hier den jeweiligen Standortnamen eintragen
+DEVICE_ID = "01_Torben"  # <-- hier die Geräte Nummer eingeben
 print(f"[INFO] Client-ID: {DEVICE_ID}")
 
 # =========================================================

@@ -19,17 +19,19 @@ except:
 app = Flask(__name__)
 
 # --- Basisordner für Server-Daten ---
-BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "server_data")
+BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Kirill_Website/data")
 os.makedirs(BASE_DIR, exist_ok=True)
 
 ARCHIVE_DIR = os.path.join(BASE_DIR, "archive")
 os.makedirs(ARCHIVE_DIR, exist_ok=True)
 
+DEVICES_FILE = os.path.join(BASE_DIR, "devices.json")
+
 # Globaler Lock für Dateizugriffe
 file_lock = threading.Lock()
 
 # =========================================================
-# ================ SPEICHERN & HILFSFUNKTIONEN ===========
+# ================ SPEICHERN & HILFSFUNKTIONEN ============
 # =========================================================
 
 def atomic_write_json(path, data):
@@ -48,6 +50,42 @@ def atomic_write_json(path, data):
         except Exception:
             pass
         raise
+
+def load_json(path, default=None):
+    if not os.path.exists(path):
+        return default if default is not None else {}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default if default is not None else {}
+
+# =========================================================
+# ================ DEVICES.JSON HANDLING ==================
+# =========================================================
+
+def update_devices_json(device_id):
+    """Erstellt oder aktualisiert den Eintrag eines Geräts in devices.json"""
+    with file_lock:
+        devices = load_json(DEVICES_FILE, {})
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        if device_id not in devices:
+            devices[device_id] = {
+                "created": now_str,
+                "last_upload": now_str
+            }
+        else:
+            devices[device_id]["last_upload"] = now_str
+
+        try:
+            atomic_write_json(DEVICES_FILE, devices)
+        except Exception as e:
+            print("[ERROR] Schreiben devices.json fehlgeschlagen:", e)
+
+# =========================================================
+# ================ TAGESSTATISTIK / ARCHIVE ===============
+# =========================================================
 
 def update_daily_totals_async(dir_path, good, meh, bad, avg_sensor, count_new):
     def worker():
@@ -108,15 +146,11 @@ def archive_data_async(data_to_save):
             print("[ERROR] archive_data_async:", e)
     threading.Thread(target=worker, daemon=True).start()
 
-# =========================================================
-# ================ JAHRES-ARCHIVIERUNG ==================
-# =========================================================
-
 def archive_old_years_zip():
     current_year = datetime.now().year
     for device_id in os.listdir(BASE_DIR):
         device_path = os.path.join(BASE_DIR, device_id)
-        if not os.path.isdir(device_path) or device_id=="archive":
+        if not os.path.isdir(device_path) or device_id in ("archive", "devices.json"):
             continue
         for year_folder in os.listdir(device_path):
             year_path = os.path.join(device_path, year_folder)
@@ -149,44 +183,66 @@ def daily_archive_scheduler():
     threading.Thread(target=worker, daemon=True).start()
 
 # =========================================================
-# ================ LIVE-DASHBOARD =======================
+# ================ LIVE-DASHBOARD =========================
 # =========================================================
 
 def live_daily_dashboard():
     def worker():
         while True:
+            # Devices-Datei laden (falls vorhanden)
+            devices_json_path = os.path.join(BASE_DIR, "devices.json")
+            try:
+                if os.path.exists(devices_json_path):
+                    with open(devices_json_path, "r", encoding="utf-8") as f:
+                        devices_info = json.load(f)
+                else:
+                    devices_info = {}
+            except Exception:
+                devices_info = {}
+
             now = datetime.now()
-            print("\033[2J\033[H")
+            print("\033[2J\033[H")  # Terminal clear
             print(f"========== Live Dashboard {now.strftime('%Y-%m-%d')} ==========")
+
             for device_id in os.listdir(BASE_DIR):
                 device_path = os.path.join(BASE_DIR, device_id)
-                if not os.path.isdir(device_path) or device_id=="archive":
+                if not os.path.isdir(device_path) or device_id == "archive":
                     continue
+
+                # Gerätename aus devices.json laden, falls vorhanden
+                device_meta = devices_info.get(device_id, {})
+                display_name = device_meta.get("name", "unbekannt")
+                created = device_meta.get("created", "?")
+                last_upload = device_meta.get("last_upload", "?")
+
+                print(f"\n--- Device: {device_id} ({display_name}) ---")
+                print(f"Erstellt am: {created} | Letzter Upload: {last_upload}")
+
                 day_dir = os.path.join(device_path, now.strftime("%Y"), now.strftime("%m"), now.strftime("%d"))
                 totals_file = os.path.join(day_dir, "totals.json")
-                print(f"\n--- Device: {device_id} ---")
+
                 if os.path.exists(totals_file):
                     try:
                         with open(totals_file, "r", encoding="utf-8") as f:
                             totals = json.load(f)
-                        good = totals.get('good',0)
-                        meh = totals.get('meh',0)
-                        bad = totals.get('bad',0)
-                        avg = totals.get("avg_sensor_day", {"temp":0,"db":0,"co2":0,"voc":0})
-                        weekday = totals.get("weekday","?")
-                        total_events = good+meh+bad
+                        good = totals.get('good', 0)
+                        meh = totals.get('meh', 0)
+                        bad = totals.get('bad', 0)
+                        avg = totals.get("avg_sensor_day", {"temp": 0, "db": 0, "co2": 0, "voc": 0})
+                        weekday = totals.get("weekday", "?")
+                        total_events = good + meh + bad
 
                         def bar(value, max_len=30):
-                            if total_events==0:
-                                return ' '*max_len
-                            length = int((value/total_events)*max_len)
-                            return "█"*length + " "*(max_len-length)
+                            if total_events == 0:
+                                return ' ' * max_len
+                            length = int((value / total_events) * max_len)
+                            return "█" * length + " " * (max_len - length)
 
-                        print(f"Wochentag: {weekday}")
-                        print(f"Gut      : {good:3} |{bar(good)}|")
-                        print(f"Meh      : {meh:3} |{bar(meh)}|")
-                        print(f"Schlecht : {bad:3} |{bar(bad)}|")
-                        print(f"Temperatur: {avg.get('temp',0)}°C  dB: {avg.get('db',0)}  CO2: {avg.get('co2',0)}ppm  VOC: {avg.get('voc',0)}ppb")
+                        print(f"Wochentag : {weekday}")
+                        print(f"Gut       : {good:3} |{bar(good)}|")
+                        print(f"Neutral   : {meh:3} |{bar(meh)}|")
+                        print(f"Schlecht  : {bad:3} |{bar(bad)}|")
+                        print(f"Temperatur: {avg.get('temp', 0)}°C  dB: {avg.get('db', 0)}  CO2: {avg.get('co2', 0)}ppm  VOC: {avg.get('voc', 0)}ppb")
                     except Exception as e:
                         print(f"Fehler beim Laden Tageswerte von {device_id}: {e}")
                 else:
@@ -195,8 +251,9 @@ def live_daily_dashboard():
             time.sleep(60)
     threading.Thread(target=worker, daemon=True).start()
 
+
 # =========================================================
-# ================ API-ENDPOINTS ========================
+# ================ API-ENDPOINTS ==========================
 # =========================================================
 
 @app.route("/upload", methods=["POST"])
@@ -208,6 +265,8 @@ def upload():
     device_id = data.get("device_id", "default")
     device_dir = os.path.join(BASE_DIR, device_id)
     os.makedirs(device_dir, exist_ok=True)
+
+    update_devices_json(device_id)  # <---- hier wird devices.json aktualisiert
 
     events = data.get("events", [])
     avg_sensor = data.get("avg_sensor", {"temp":0,"db":0,"co2":0,"voc":0})
@@ -266,6 +325,36 @@ def get_day_data(device_id, year, month, day):
             except Exception:
                 continue
     return jsonify(uploads)
+
+# =========================================================
+# ================ NEUER ENDPOINT: /devices ===============
+# =========================================================
+
+@app.route("/devices", methods=["GET"])
+def get_devices():
+    """Gibt die aktuelle devices.json zurück"""
+    devices = load_json(DEVICES_FILE, {})
+    return jsonify(devices)
+
+@app.route("/set_device_name", methods=["POST"])
+def set_device_name():
+    """Setzt oder ändert den Standort-/Anzeigenamen eines Geräts"""
+    data = request.get_json()
+    device_id = data.get("device_id")
+    name = data.get("name")
+
+    if not device_id or not name:
+        return jsonify({"status": "error", "message": "device_id und name erforderlich"}), 400
+
+    with file_lock:
+        devices = load_json(DEVICES_FILE, {})
+        if device_id not in devices:
+            devices[device_id] = {"created": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        devices[device_id]["name"] = name
+        devices[device_id]["last_upload"] = devices[device_id].get("last_upload", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        atomic_write_json(DEVICES_FILE, devices)
+
+    return jsonify({"status": "ok", "message": f"Name für {device_id} gesetzt auf '{name}'"}), 200
 
 # =========================================================
 # ================ SERVER START ==========================
