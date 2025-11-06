@@ -379,6 +379,25 @@ aside.links {
   margin-left: 230px; /* Breite von aside.links + etwas Abstand */
 }
 
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #007cbc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* gap: 10px;  <- Entfernen oder auskommentieren */
+}
+
+.page-title .logo-text {
+  height: 150px;
+  width: auto;
+  position: relative;
+  top: 19px;      /* vertikale Justierung */
+  margin-left: -23px; /* <<< hier stellst du den horizontalen Abstand ein */
+}
+
+
 
 
 
