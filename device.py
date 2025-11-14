@@ -19,24 +19,19 @@ import argparse
 import logging
 from datetime import datetime
 
-# Import the new sensor module
 import sensor
 
-# --- Konfiguration ---
 SERVER_URL = "http://127.0.0.1:5000/upload"
 UPLOAD_TIMES = [(9, 15), (12, 15), (15, 15), (18, 15)]
 BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 os.makedirs(BASE_DIR, exist_ok=True)
 
-# --- Device ID ---
 DEVICE_ID = "01_Torben"  # <-- hier die Geräte Nummer eingeben
 print(f"[INFO] Client-ID: {DEVICE_ID}")
 
-# --- Logging ---
 logging.basicConfig(level=logging.INFO)
 _LOG = logging.getLogger("device")
 
-# --- Command line args ---
 parser = argparse.ArgumentParser(description="SIA Client (Smiley + Sensoranzeige)")
 parser.add_argument("--interval", "-i", type=float, default=2.0, help="Sensor Poll-Intervall in Sekunden (default 2.0)")
 parser.add_argument("--use-scd", action="store_true", help="SCD4x (SCD40/SCD41) verwenden, falls vorhanden")
@@ -47,18 +42,13 @@ POLL_INTERVAL = args.interval
 USE_SCD = args.use_scd
 USE_BME = args.use_bme
 
-# Start sensor thread/module
 sensor.start(poll_interval=POLL_INTERVAL, use_scd=USE_SCD, use_bme=USE_BME)
 
-# =========================================================
-# ================ PYGAME INITIALISIERUNG =================
-# =========================================================
 pygame.init()
 screen = pygame.display.set_mode((1024, 600))
 pygame.display.set_caption(f"Smiley + Sensoranzeige ({DEVICE_ID})")
 clock = pygame.time.Clock()
 
-# Fonts: fallback falls Datei fehlt
 def load_font(path, size):
     try:
         return pygame.font.Font(path, size)
@@ -69,7 +59,6 @@ def load_font(path, size):
 sensor_font = load_font("Media/Silkscreen/Silkscreen-Regular.ttf", 36)
 mood_font = load_font("Media/Silkscreen/Silkscreen-Regular.ttf", 28)
 
-# Smileys laden (falls nicht vorhanden -> einfache farbige Flächen)
 def load_image(path, fallback_color):
     try:
         return pygame.image.load(path).convert_alpha()
@@ -83,9 +72,6 @@ good_smiley = load_image("Media/good.png", (0,255,0))
 meh_smiley  = load_image("Media/meh.png", (255,200,0))
 bad_smiley  = load_image("Media/bad.png", (255,0,0))
 
-# =========================================================
-# ================ DATENSTRUKTUREN ========================
-# =========================================================
 events = []
 upload_history = []
 running = True
@@ -96,9 +82,6 @@ upload_counter = 0
 upload_failed_time = 0
 UPLOAD_FAILED_DURATION = 2.0
 
-# =========================================================
-# ================ HILFSFUNKTIONEN =======================
-# =========================================================
 def load_daily_totals():
     today = datetime.now()
     dir_path = os.path.join(BASE_DIR, today.strftime("%Y"), today.strftime("%m"), today.strftime("%d"))
@@ -139,9 +122,6 @@ def draw_sensor_values(temp, db, co2, voc, smiley_rect):
     for i, line in enumerate(right_textVOC):
         screen.blit(sensor_font.render(line, True, (255,255,255)), (right_x, base_yDown + i*40))
 
-# =========================================================
-# ================ SMILEY-LOGIK ==========================
-# =========================================================
 def calculate_avg_smiley(good, meh, bad):
     total = good + meh + bad
     if total == 0:
@@ -158,6 +138,7 @@ def calculate_avg_smiley(good, meh, bad):
     pct_meh  = int((meh / total) * 100)
     pct_bad  = int((bad / total) * 100)
     return smiley, (pct_good, pct_meh, pct_bad)
+
 
 def draw_emotes(good, meh, bad):
     smiley, percentages = calculate_avg_smiley(good, meh, bad)
@@ -184,9 +165,6 @@ def draw_emotes(good, meh, bad):
 
     return rect
 
-# =========================================================
-# ================ UPLOAD ================================
-# =========================================================
 def upload_to_server(avg_sensor, events):
     global upload_failed_time
     payload = {"device_id": DEVICE_ID, "events": events, "avg_sensor": avg_sensor}
@@ -208,7 +186,6 @@ def upload_cycle():
     avg_sensor = avg_sensor_values()
     threading.Thread(target=upload_to_server, args=(avg_sensor, events.copy()), daemon=True).start()
     events.clear()
-    # clear sensor buffer as before
     with threading.Lock():
         sensor.sensor_buffer.clear()
     upload_history.append((now.strftime("%Y-%m-%d"), upload_counter))
@@ -222,9 +199,6 @@ def check_scheduled_upload():
             if (not upload_history) or upload_history[-1][0] != today_str or upload_history[-1][1] < idx+1:
                 upload_cycle()
 
-# =========================================================
-# ================ PYGAME HAUPTSCHLEIFE ==================
-# =========================================================
 good = meh = bad = 0
 
 while running:
@@ -251,7 +225,6 @@ while running:
             elif event.key == pygame.K_RETURN:
                 upload_cycle()
 
-    # Smiley Override 3 Sekunden
     if current_time - smiley_override_time > SMILEY_OVERRIDE_DURATION:
         totals = load_daily_totals()
         total_good = totals.get("good",0)+good
@@ -262,7 +235,6 @@ while running:
 
     check_scheduled_upload()
 
-    # Read latest sensor sample from sensor module
     if sensor.sensor_buffer:
         temp, db, co2, voc, _ = sensor.sensor_buffer[-1]
     else:
@@ -274,8 +246,6 @@ while running:
     pygame.display.flip()
     clock.tick(30)
 
-# Aufräumen
 sensor.stop()
-# letzte Daten hochladen vor Exit
 upload_cycle()
 pygame.quit()

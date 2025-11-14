@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Oguz: Sensor 1.0">
-      <change afterPath="$PROJECT_DIR$/sensor.py" afterDir="false" />
+    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Oguz: Sensor 1.1">
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/device.py" beforeDir="false" afterPath="$PROJECT_DIR$/device.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sensor.py" beforeDir="false" afterPath="$PROJECT_DIR$/sensor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +207,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763041028549</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Oguz: Sensor 1.1">
+      <option name="closed" value="true" />
+      <created>1763112193388</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1763112193388</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,7 +229,8 @@
     <MESSAGE value="Freitag" />
     <MESSAGE value="Oguz: Cient ID Ordnerstruktur" />
     <MESSAGE value="Oguz: Sensor 1.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="Oguz: Sensor 1.0" />
+    <MESSAGE value="Oguz: Sensor 1.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Oguz: Sensor 1.1" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/SIA$dummy_generator.coverage" NAME="dummy_generator Coverage Results" MODIFIED="1761810746116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

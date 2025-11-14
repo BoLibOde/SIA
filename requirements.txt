@@ -1,0 +1,7 @@
+pygame
+requests
+adafruit-blinka
+adafruit-circuitpython-ccs811
+adafruit-circuitpython-scd4x
+adafruit-circuitpython-bme280
+adafruit-circuitpython-busdevice
