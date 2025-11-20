@@ -1,0 +1,140 @@
+{
+    "upload_Timestamp": "2025-11-20 13:43:32",
+    "device_id": "01_Torben",
+    "good": 10,
+    "meh": 9,
+    "bad": 12,
+    "avg_sensor": {
+        "temp": 23.0,
+        "db": 45.1,
+        "co2": 412,
+        "voc": 12
+    },
+    "events": [
+        {
+            "type": "good",
+            "timestamp": 1763642599.8634067
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642600.2669966
+        },
+        {
+            "type": "good",
+            "timestamp": 1763642600.5056074
+        },
+        {
+            "type": "good",
+            "timestamp": 1763642600.8087766
+        },
+        {
+            "type": "good",
+            "timestamp": 1763642600.9765282
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642601.3454182
+        },
+        {
+            "type": "good",
+            "timestamp": 1763642601.5129466
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642601.7167425
+        },
+        {
+            "type": "good",
+            "timestamp": 1763642601.9528923
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642602.0885942
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642602.4603288
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642602.6616855
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642602.7985253
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642602.9747503
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642603.1139426
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642603.2898438
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642603.4249675
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642603.5935395
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642603.7302
+        },
+        {
+            "type": "good",
+            "timestamp": 1763642604.0011597
+        },
+        {
+            "type": "good",
+            "timestamp": 1763642604.1685266
+        },
+        {
+            "type": "good",
+            "timestamp": 1763642604.3039315
+        },
+        {
+            "type": "good",
+            "timestamp": 1763642604.4413455
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642604.8139439
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642604.9831624
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642605.151692
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642605.3218431
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642605.4886487
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642608.0535262
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642609.237025
+        },
+        {
+            "type": "bad",
+            "timestamp": 1763642609.6402485
+        }
+    ],
+    "upload_number": 1
+}
