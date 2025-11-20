@@ -7,6 +7,7 @@ Pygame-basierte Anzeige und Eventloop.
 UI lädt alle Images selbst (nach pygame.init()) und mappt
 device-provided kinds ("good","meh","bad") auf diese Surfaces.
 """
+
 import pygame
 import time
 import logging
@@ -50,7 +51,7 @@ def run(get_counts,
     pygame.display.set_caption("Smiley + Sensoranzeige")
     clock = pygame.time.Clock()
 
-    sensor_font = load_font("Media/Silkscreen/Silkscreen-Regular.ttf", 36)
+    sensor_font = load_font("Media/Silkscreen/Silkscreen-Regular.ttf", 28)
     mood_font = load_font("Media/Silkscreen/Silkscreen-Regular.ttf", 28)
 
     # Lade grosse Smileys (200x200) und kleine Varianten (48x48)
@@ -147,22 +148,105 @@ def run(get_counts,
         rect = big_smiley.get_rect(center=(screen.get_width()//2, screen.get_height()//2 - 50))
         screen.blit(big_smiley, rect)
 
-        # Draw percentages
-        try:
-            text = f"Positiv: {pct_good}% | Neutral: {pct_meh}% | Negativ: {pct_bad}%"
-            text_surface = mood_font.render(text, True, (255,255,255))
-            screen.blit(text_surface, (screen.get_width()//2 - text_surface.get_width()//2, rect.bottom + 10))
-        except Exception:
-            pass
-
-        # Draw counters left bottom
+        # Write mood and sensor data side by side (minimal changes, mood colors kept).
         base_x = 40
         base_y = screen.get_height() - 150
-        line_height = 40
         try:
-            screen.blit(mood_font.render(f"Gut: {good}", True, (0,255,0)), (base_x, base_y))
-            screen.blit(mood_font.render(f"Neutral: {meh}", True, (255,200,0)), (base_x, base_y+line_height))
-            screen.blit(mood_font.render(f"Schlecht: {bad}", True, (255,0,0)), (base_x, base_y+2*line_height))
+            # Prepare mood lines (keep original colored values and percentages)
+            mood_lines = [
+                ("Gut:", str(good), (0,255,0), f"{pct_good}%"),
+                ("Neutral:", str(meh), (255,200,0), f"{pct_meh}%"),
+                ("Schlecht:", str(bad), (255,0,0), f"{pct_bad}%"),
+            ]
+
+            # Render mood surfaces and compute sizes
+            mood_label_surfs = []
+            mood_value_surfs = []
+            mood_pct_surfs = []
+            max_label_w = 0
+            max_value_w = 0
+            max_pct_w = 0
+            max_line_h = 0
+            for lbl, val, color, pct in mood_lines:
+                s_lbl = mood_font.render(f"{lbl}", True, (255,255,255))          # label white
+                s_val = mood_font.render(f"{val}", True, color)                # value colored
+                s_pct = mood_font.render(f" | {pct}", True, color)             # pct colored
+                mood_label_surfs.append(s_lbl)
+                mood_value_surfs.append(s_val)
+                mood_pct_surfs.append(s_pct)
+                max_label_w = max(max_label_w, s_lbl.get_width())
+                max_value_w = max(max_value_w, s_val.get_width())
+                max_pct_w = max(max_pct_w, s_pct.get_width())
+                max_line_h = max(max_line_h, s_lbl.get_height(), s_val.get_height(), s_pct.get_height())
+
+            mood_gap = 12
+            mood_block_width = max_label_w + mood_gap + max_value_w + mood_gap + max_pct_w
+
+            # Position mood block (same baseline as original)
+            mood_x = base_x
+            mood_y = base_y
+
+            # Draw mood block
+            for i in range(len(mood_lines)):
+                line_y = mood_y + i * (max_line_h + 8)
+                screen.blit(mood_label_surfs[i], (mood_x, line_y))
+                screen.blit(mood_value_surfs[i], (mood_x + max_label_w + mood_gap, line_y))
+                screen.blit(mood_pct_surfs[i], (mood_x + max_label_w + mood_gap + max_value_w + mood_gap, line_y))
+
+            # Prepare sensor block (right-aligned) and place it slightly higher to avoid VOC clipping.
+            sensor_lines = [
+                ("Temperatur:", f"{temp:.1f} °C"),
+                ("Dezibel:", f"{db:.1f} dB"),
+                ("CO2:", f"{co2} ppm"),
+                ("VOC:", f"{voc} ppb"),
+            ]
+
+            sensor_label_surfs = []
+            sensor_value_surfs = []
+            max_sensor_label_w = 0
+            max_sensor_value_w = 0
+            max_sensor_line_h = 0
+            for lbl, val in sensor_lines:
+                s_lbl = sensor_font.render(lbl, True, (255,255,255))
+                s_val = sensor_font.render(val, True, (255,255,255))
+                sensor_label_surfs.append(s_lbl)
+                sensor_value_surfs.append(s_val)
+                max_sensor_label_w = max(max_sensor_label_w, s_lbl.get_width())
+                max_sensor_value_w = max(max_sensor_value_w, s_val.get_width())
+                max_sensor_line_h = max(max_sensor_line_h, s_lbl.get_height(), s_val.get_height())
+
+            sensor_block_width = max_sensor_label_w + 8 + max_sensor_value_w
+            max_allowed_sensor_x = screen.get_width() - sensor_block_width - 20
+
+            # Right-align the sensor block (user requested rechtsbündig).
+            sensor_x = max_allowed_sensor_x
+
+            # Compute total sensor block height and choose sensor_y higher to avoid VOC being clipped.
+            line_spacing = max_sensor_line_h + 8
+            total_sensor_height = len(sensor_lines) * line_spacing
+
+            # Prefer to position sensors slightly above the mood block baseline so VOC (last line) stays visible.
+            # Start a bit higher than mood_y, but clamp to screen bounds.
+            desired_sensor_y = mood_y - 20  # move sensors a bit higher than mood baseline
+            # Ensure sensors are fully on-screen vertically
+            sensor_y = min(desired_sensor_y, screen.get_height() - total_sensor_height - 20)
+            sensor_y = max(20, sensor_y)
+
+            # If right-aligned block overlaps mood block horizontally (no room), fall back to placing below mood block
+            if sensor_x < mood_x + mood_block_width + 8:
+                # Not enough horizontal space to the right: place the sensor block below mood block (guarantees visibility)
+                sensor_x = mood_x
+                sensor_y = mood_y + len(mood_lines) * (max_line_h + 8) + 12
+                # Clamp vertically if still would run off-screen
+                if sensor_y + total_sensor_height + 20 > screen.get_height():
+                    sensor_y = max(20, screen.get_height() - total_sensor_height - 20)
+
+            # Draw sensor block stacked vertically (labels + values)
+            for i in range(len(sensor_lines)):
+                line_y = sensor_y + i * line_spacing
+                screen.blit(sensor_label_surfs[i], (sensor_x, line_y))
+                screen.blit(sensor_value_surfs[i], (sensor_x + max_sensor_label_w + 8, line_y))
+
         except Exception:
             pass
 
@@ -173,27 +257,6 @@ def run(get_counts,
                 screen.blit(text, (screen.get_width()//2 - text.get_width()//2, 50))
             except Exception:
                 pass
-
-        # Sensor values at sides
-        try:
-            left_textTemp = [f"Temperatur:", f"{temp:.1f} °C"]
-            left_textdB = [f"Dezibel:", f"{db:.1f} dB"]
-            right_textCO2 = [f"CO2:", f"{co2} ppm"]
-            right_textVOC = [f"VOC:", f"{voc} ppb"]
-            left_x = rect.left - 280
-            right_x = rect.right + 60
-            base_yUP = rect.top + 80
-            base_yDown = rect.top + 240
-            for i, line in enumerate(left_textTemp):
-                screen.blit(sensor_font.render(line, True, (255,255,255)), (left_x, base_yUP + i*40))
-            for i, line in enumerate(left_textdB):
-                screen.blit(sensor_font.render(line, True, (255,255,255)), (left_x, base_yDown + i*40))
-            for i, line in enumerate(right_textCO2):
-                screen.blit(sensor_font.render(line, True, (255,255,255)), (right_x, base_yUP + i*40))
-            for i, line in enumerate(right_textVOC):
-                screen.blit(sensor_font.render(line, True, (255,255,255)), (right_x, base_yDown + i*40))
-        except Exception:
-            pass
 
         pygame.display.flip()
         clock.tick(30)
