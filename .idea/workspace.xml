@@ -1,4 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 <project version="4">
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
@@ -21,9 +67,10 @@
       <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/data/archive/archive_2025-11-20_13-44-40.json" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/data/devices.json" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/public.html" afterDir="false" />
+    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Oguz: code ordnung">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
-    <option name="SHOW_DIALOG" value="false" />
+    <option name="SHOW_DIALOG" value="false" />''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
@@ -68,7 +115,6 @@
     "Python.SIA_test.executor": "Run",
     "Python.device.executor": "Run",
     "Python.dummy_generator.executor": "Run",
-    "Python.server.executor": "Run",
     "Python.ui.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -77,7 +123,7 @@
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "master",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/kiril/PycharmProjects/SIA",
+    "last_opened_file_path": "C:/Users/MezdaOgu/Desktop/Python/SIA",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -89,7 +135,6 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\kiril\PycharmProjects\SIA" />
       <recent name="C:\Users\MezdaOgu\Desktop\Python\SIA" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -239,7 +284,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763113753292</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Oguz: code ordnung">
+      <option name="closed" value="true" />
+      <created>1763590447925</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1763590447925</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -255,7 +308,8 @@
     <MESSAGE value="Oguz: Sensor 1.0" />
     <MESSAGE value="Oguz: Sensor 1.1" />
     <MESSAGE value="Oguz: Sensor 1.2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Oguz: Sensor 1.2" />
+    <MESSAGE value="Oguz: code ordnung" />
+    <option name="LAST_COMMIT_MESSAGE" value="Oguz: code ordnung" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/SIA$server.coverage" NAME="server Coverage Results" MODIFIED="1763642587795" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
