@@ -1,5 +1,6 @@
 pygame
 requests
+rpi.gpio
 adafruit-blinka
 adafruit_ccs811
 adafruit-python-shell
