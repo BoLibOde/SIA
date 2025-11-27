@@ -1,0 +1,32 @@
+{
+    "upload_Timestamp": "2025-11-20 13:44:40",
+    "device_id": "01_Torben",
+    "good": 0,
+    "meh": 3,
+    "bad": 1,
+    "avg_sensor": {
+        "temp": 22.3,
+        "db": 45.2,
+        "co2": 407,
+        "voc": 13
+    },
+    "events": [
+        {
+            "type": "bad",
+            "timestamp": 1763642678.8766327
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642679.0470145
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642679.2830148
+        },
+        {
+            "type": "meh",
+            "timestamp": 1763642679.4527714
+        }
+    ],
+    "upload_number": 2
+}
