@@ -88,18 +88,12 @@ source "$VENV_NAME/bin/activate"
 pip install --upgrade pip
 
 # Install dependencies from requirements.txt
-echo "Installing Python dependencies..."
-pip install pygame
-pip install requests
-pip install adafruit-blinka
-pip install adafruit-circuitpython-ccs811
-pip install git+https://github.com/pimoroni/scd4x-python.git
-pip install adafruit-circuitpython-bme280
-pip install adafruit-circuitpython-busdevice
+echo "Installing Python dependencies from requirements.txt..."
+pip install -r requirements.txt
 
 # Optional: Install audio support packages
 echo "Installing optional audio support packages..."
-pip install sounddevice numpy || echo "Note: sounddevice/numpy installation may fail without audio hardware"
+pip install sounddevice numpy || echo "Note: sounddevice/numpy installation may fail due to missing system dependencies"
 
 echo -e "${GREEN}Python dependencies installed successfully.${NC}"
 
