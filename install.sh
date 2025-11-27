@@ -15,6 +15,8 @@ if ! command -v wget >/dev/null 2>&1; then
     exit 1
 fi
 
+cd "$HOME/Desktop/"
+
 wget -O setup.sh "$SETUP_URL"
 chmod +x setup.sh
 ./setup.sh
