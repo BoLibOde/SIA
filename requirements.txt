@@ -1,6 +1,7 @@
 pygame
 requests
 adafruit-blinka
+adafruit-python-shell
 adafruit-circuitpython-ccs811
 # Use Pimoroni scd4x-python as the SCD4x driver:
 git+https://github.com/pimoroni/scd4x-python.git
