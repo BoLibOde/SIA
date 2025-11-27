@@ -13,8 +13,8 @@ Provides:
 - sensor_buffer: a list shared with callers (max length capped).
 
 Behavior:
-- If Adafruit/CircuitPython libs and I2C are available, uses real sensors.
-- Otherwise falls back to simulator values (matching original behavior).
+- Requires Adafruit/CircuitPython libs and I2C to be available. Simulator fallback has been
+  intentionally disabled so only real sensors can be used.
 """
 
 from typing import TYPE_CHECKING
@@ -26,7 +26,6 @@ if TYPE_CHECKING:
 import importlib
 import time
 import threading
-import random
 import logging
 
 _LOG = logging.getLogger("sensor")
@@ -164,46 +163,55 @@ class SensorHub:
 
 def _sensor_loop(poll_interval, use_scd, use_bme):
     global _sensor_hub, _hub_available
-    if board is not None and adafruit_ccs811 is not None:
-        try:
-            _sensor_hub = SensorHub(use_scd=use_scd, use_bme=use_bme)
-            _hub_available = True
-            _LOG.info("SensorHub initialized (real sensors).")
-        except Exception as e:
-            _LOG.warning("SensorHub initialization failed, falling back to simulator: %s", e)
-            _sensor_hub = None
-            _hub_available = False
-    else:
-        _LOG.info("No CircuitPython environment or libs -> using simulator.")
+
+    # Simulator fallback intentionally disabled: require real hardware/libs.
+    if board is None or adafruit_ccs811 is None:
+        _LOG.error("CircuitPython environment or required libs not available; simulator is disabled. Exiting sensor loop.")
+        return
+
+    try:
+        _sensor_hub = SensorHub(use_scd=use_scd, use_bme=use_bme)
+        _hub_available = True
+        _LOG.info("SensorHub initialized (real sensors).")
+    except Exception as e:
+        _LOG.exception("SensorHub initialization failed and simulator is disabled: %s", e)
+        return
 
     while not _stop_event.is_set():
         ts = time.time()
-        if _hub_available and _sensor_hub is not None:
-            try:
-                s = _sensor_hub.read_once()
-                temp = float(s.get("scd_temp_c") or 22.0)
-                co2_from_scd = s.get("scd_co2")
-                co2_from_ccs = s.get("ccs_eco2")
-                co2 = int(co2_from_scd or co2_from_ccs or 410)
-                tvoc = int(s.get("ccs_tvoc") or 0)
-                db = random.uniform(35.0, 55.0)
-                voc = tvoc if tvoc else random.randint(5, 20)
-            except Exception:
-                _LOG.exception("Error reading SensorHub; using simulator values")
-                temp = random.uniform(20.0, 25.0)
-                db = random.uniform(35.0, 55.0)
-                co2 = random.randint(390, 430)
-                voc = random.randint(5, 20)
-        else:
-            temp = random.uniform(20.0, 25.0)
-            db = random.uniform(35.0, 55.0)
-            co2 = random.randint(390, 430)
-            voc = random.randint(5, 20)
+        try:
+            s = _sensor_hub.read_once()
 
-        with _lock:
-            sensor_buffer.append((round(float(temp), 2), round(float(db), 1), int(co2), int(voc), ts))
-            if len(sensor_buffer) > _MAX_BUFFER:
-                sensor_buffer.pop(0)
+            # Require actual sensor values. If critical values are missing, stop.
+            temp = s.get("scd_temp_c")
+            co2_from_scd = s.get("scd_co2")
+            co2_from_ccs = s.get("ccs_eco2")
+
+            if temp is None:
+                _LOG.error("Temperature not available from sensors; stopping sensor loop (simulator disabled).")
+                break
+
+            co2_val = co2_from_scd if co2_from_scd is not None else co2_from_ccs
+            if co2_val is None:
+                _LOG.error("CO2 not available from sensors; stopping sensor loop (simulator disabled).")
+                break
+
+            # tvoc might be absent; default to 0 when missing (not a simulator fallback).
+            tvoc = s.get("ccs_tvoc") or 0
+
+            # db (decibel) measurement is not provided by these sensors. Set to 0.0 to keep tuple shape.
+            db = 0.0
+            voc = int(tvoc)
+
+            # Append the measured values (rounded to existing format)
+            with _lock:
+                sensor_buffer.append((round(float(temp), 2), round(float(db), 1), int(co2_val), int(voc), ts))
+                if len(sensor_buffer) > _MAX_BUFFER:
+                    sensor_buffer.pop(0)
+
+        except Exception:
+            _LOG.exception("Error reading SensorHub; stopping sensor loop (simulator disabled).")
+            break
 
         _stop_event.wait(poll_interval)
 
