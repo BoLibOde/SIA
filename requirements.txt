@@ -9,7 +9,7 @@ adafruit-circuitpython-ccs811
 git+https://github.com/pimoroni/scd4x-python.git
 adafruit-circuitpython-bme280
 adafruit-circuitpython-busdevice
-adafruit_bus_device.spi_device
+smbus
 
 # Optional microphone backends:
 # - CircuitPython driver for ICS43434 (on supported Blinka/CircuitPython boards):
