@@ -12,7 +12,7 @@ fi
 set -euo pipefail
 
 # =============================================================================
-# SIA Raspberry Pi Setup Script (more robust)
+# SIA Raspberry Pi Setup Script (robust)
 # =============================================================================
 
 # Colors for output
