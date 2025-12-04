@@ -1,11 +1,15 @@
 pygame
 requests
+rpi.gpio
 adafruit-blinka
+adafruit_ccs811
+adafruit-python-shell
 adafruit-circuitpython-ccs811
 # Use Pimoroni scd4x-python as the SCD4x driver:
 git+https://github.com/pimoroni/scd4x-python.git
 adafruit-circuitpython-bme280
 adafruit-circuitpython-busdevice
+smbus
 
 # Optional microphone backends:
 # - CircuitPython driver for ICS43434 (on supported Blinka/CircuitPython boards):
