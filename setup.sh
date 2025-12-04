@@ -12,16 +12,14 @@ fi
 set -euo pipefail
 
 # =============================================================================
-# SIA Raspberry Pi Setup Script (robust)
+# SIA Raspberry Pi Setup Script (minimal-first ordering)
 # =============================================================================
 
-# Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Configuration
 REPO_URL="https://github.com/BoLibOde/SIA.git"
 INSTALL_DIR="$HOME/Desktop/SIA"
 VENV_NAME=".venv"
@@ -29,26 +27,58 @@ VENV_NAME=".venv"
 echo -e "${GREEN}=== SIA Raspberry Pi Setup Script ===${NC}"
 echo ""
 
-# Prevent running as root (to avoid HOME=/root issues)
+# Prevent running as root
 if [ "$(id -u)" -eq 0 ]; then
     echo -e "${RED}Do not run this script as root.${NC}"
     echo "Run it as your normal user (the script uses sudo for apt commands)."
     exit 1
 fi
 
-# -----------------------------------------------------------------------------
-# Step 1: Update System and Install Required Packages
-# -----------------------------------------------------------------------------
-echo -e "${YELLOW}[1/6] Updating system packages...${NC}"
+# -----------------------
+# Phase 0: apt update once
+# -----------------------
+echo -e "${YELLOW}[1/5] Updating package lists...${NC}"
 sudo apt update
-sudo apt upgrade -y
 
-echo -e "${YELLOW}[2/6] Installing required packages...${NC}"
+# ------------------------------------------------------
+# Phase 1: Install minimal prerequisites (git, python, venv)
+# ------------------------------------------------------
+echo -e "${YELLOW}[2/5] Installing minimal prerequisites (git, python, venv)...${NC}"
+sudo apt install -y git python3 python3-pip python3-venv
+echo -e "${GREEN}Minimal prerequisites installed.${NC}"
+
+# ------------------------------------------------------
+# Phase 2: Clone repository and create virtual environment
+# ------------------------------------------------------
+echo -e "${YELLOW}[3/5] Cloning repository and creating virtualenv...${NC}"
+mkdir -p "$HOME/Desktop"
+cd "$HOME/Desktop"
+
+if [ -d "$INSTALL_DIR" ]; then
+    echo "Removing existing $INSTALL_DIR"
+    rm -rf "$INSTALL_DIR"
+fi
+
+git clone "$REPO_URL"
+cd "$INSTALL_DIR"
+
+echo "Creating virtual environment at $INSTALL_DIR/$VENV_NAME"
+python3 -m venv "$VENV_NAME"
+
+# Activate venv
+# shellcheck disable=SC1091
+source "$VENV_NAME/bin/activate"
+
+# Upgrade pip in the venv
+pip install --upgrade pip
+echo -e "${GREEN}Virtual environment created and pip upgraded.${NC}"
+
+# ------------------------------------------------------
+# Phase 3: Install remaining system libraries needed by pip packages
+# ------------------------------------------------------
+echo -e "${YELLOW}[4/5] Installing system libraries required for Python packages...${NC}"
+# These can be installed while venv is active; sudo apt affects the system, not the venv
 sudo apt install -y \
-    git \
-    python3 \
-    python3-pip \
-    python3-venv \
     python3-dev \
     libsdl2-dev \
     libsdl2-image-dev \
@@ -58,93 +88,23 @@ sudo apt install -y \
     libportaudiocpp0 \
     portaudio19-dev
 
-echo -e "${GREEN}System packages installed successfully.${NC}"
+echo -e "${GREEN}System libraries installed.${NC}"
 
-# -----------------------------------------------------------------------------
-# Step 2: Remove Existing SIA Directory
-# -----------------------------------------------------------------------------
-echo -e "${YELLOW}[3/6] Removing existing SIA directory (if exists)...${NC}"
-if [ -d "$INSTALL_DIR" ]; then
-    rm -rf "$INSTALL_DIR"
-    echo -e "${GREEN}Removed existing SIA directory.${NC}"
-else
-    echo "No existing SIA directory found."
-fi
-
-# -----------------------------------------------------------------------------
-# Step 3: Clone Repository
-# -----------------------------------------------------------------------------
-echo -e "${YELLOW}[4/6] Cloning SIA repository...${NC}"
-
-# Ensure Desktop directory exists
-mkdir -p "$HOME/Desktop"
-
-cd "$HOME/Desktop"
-if ! git clone "$REPO_URL"; then
-    echo -e "${RED}Error: git clone failed. Check your network and repository URL.${NC}"
-    exit 1
-fi
-echo -e "${GREEN}Repository cloned successfully.${NC}"
-
-# -----------------------------------------------------------------------------
-# Step 4: Prepare for virtual environment creation
-# -----------------------------------------------------------------------------
-echo -e "${YELLOW}[5/6] Preparing virtual environment...${NC}"
-if [ ! -d "$INSTALL_DIR" ]; then
-    echo -e "${RED}Error: expected directory $INSTALL_DIR not found after clone.${NC}"
-    exit 1
-fi
-
-cd "$INSTALL_DIR"
-
-# Confirm python3 exists
-if ! command -v python3 >/dev/null 2>&1; then
-    echo -e "${RED}Error: python3 is not installed.${NC}"
-    exit 1
-fi
-
-# Confirm venv support is available
-if ! python3 -c "import venv" >/dev/null 2>&1; then
-    echo -e "${RED}python3 venv module not available. Please install python3-venv:${NC}"
-    echo "  sudo apt update && sudo apt install -y python3-venv"
-    exit 1
-fi
-
-# Create virtual environment and check for errors
-echo "Creating virtual environment in $INSTALL_DIR/$VENV_NAME ..."
-if ! python3 -m venv "$VENV_NAME"; then
-    echo -e "${RED}Error: failed to create virtual environment.${NC}"
-    echo "Run the following manually to see the error:"
-    echo "  python3 -m venv '$VENV_NAME'"
-    exit 1
-fi
-
-# Activate virtual environment
-# shellcheck disable=SC1091
-source "$VENV_NAME/bin/activate"
-
-# Upgrade pip and install dependencies
-pip install --upgrade pip
+# ------------------------------------------------------
+# Phase 4: Install Python dependencies inside the venv
+# ------------------------------------------------------
+echo -e "${YELLOW}[5/5] Installing Python dependencies...${NC}"
 if [ -f requirements.txt ]; then
-    echo "Installing Python dependencies from requirements.txt..."
     pip install -r requirements.txt
 else
     echo "No requirements.txt found in $INSTALL_DIR"
 fi
 
-# Optional: Install audio support packages
-echo "Installing optional audio support packages (sounddevice numpy)..."
-pip install sounddevice numpy || echo "Note: sounddevice/numpy installation may fail due to missing system dependencies"
+# Optional audio packages
+pip install sounddevice numpy || echo "Warning: sounddevice/numpy may fail on some systems"
 
-echo -e "${GREEN}Python dependencies installed successfully.${NC}"
-
-# Deactivate virtual environment
 deactivate
 
-# -----------------------------------------------------------------------------
-# Done
-# -----------------------------------------------------------------------------
-echo ""
 echo -e "${GREEN}=== Setup Complete! ===${NC}"
 echo ""
 echo "To run the SIA application:"
