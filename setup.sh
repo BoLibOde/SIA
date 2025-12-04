@@ -1,9 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Ensure this script runs under bash (so `set -o pipefail` works).
+if [ -z "${BASH_VERSION:-}" ]; then
+  if command -v bash >/dev/null 2>&1; then
+    exec bash "$0" "$@"
+  else
+    echo "Error: this script requires bash. Please install bash and re-run." >&2
+    exit 1
+  fi
+fi
+
+set -euo pipefail
+
 # =============================================================================
 # SIA Raspberry Pi Setup Script (more robust)
 # =============================================================================
-
-set -euo pipefail
 
 # Colors for output
 GREEN='\033[0;32m'
