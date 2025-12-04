@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <title>Stimmungsbarometer</title>
+
+  <!-- Chart.js wird vor den eigenen Skripten benötigt -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <link rel="stylesheet" href="common/css/public.css">
   <link rel="icon" type="image/png" href="common/images/icon.png">
 </head>
@@ -15,12 +18,13 @@
 
   <main class="page">
     <header class="page-header">
-      <a href="https://www.ebmpapst.com/de/de/home.html" target="_blank">
+      <a href="https://www.ebmpapst.com/de/de/home.html" target="_blank" rel="noopener noreferrer">
         <img src="common/images/logo.svg" alt="Logo" class="logo">
       </a>
-      <button class="top-right-button" onclick="window.location.href='zielseite.html'">
-        Logout
-      </button>
+
+      <!-- Logout als Link (kein inline-onclick) -->
+      <a class="top-right-button" href="zielseite.html">Logout</a>
+
       <h1 class="page-title"> Stimmung bei
         <img src="common/images/logo.svg" alt="ebmpapst Logo" class="logo-text">
       </h1>
@@ -45,15 +49,17 @@
       <aside class="links">
         <table>
           <tr><th>Abteilungen</th></tr>
-          <tr onclick="updateCharts(0)"><td>Allgemein</td></tr>
-          <tr onclick="updateCharts(1)"><td>Werk</td></tr>
-          <tr onclick="updateCharts(2)"><td>Büro</td></tr>
+          <!-- Entfernte inline onclick-Attribute; JS fügt Listener hinzu -->
+          <tr><td>Allgemein</td></tr>
+          <tr><td>Werk</td></tr>
+          <tr><td>Büro</td></tr>
         </table>
-          <!-- SVG unter der Abteilungen-Tabelle -->
-<div class="svg-spinner-wrapper" aria-hidden="true">
-  <!-- Pfad anpassen: common/images/deine-datei.svg -->
-  <img id="scroll-spinner" src="common/images/fan.svg" alt="" />
-</div>
+
+        <!-- SVG unter der Abteilungen-Tabelle -->
+        <div class="svg-spinner-wrapper" aria-hidden="true">
+          <!-- Pfad anpassen: common/images/deine-datei.svg -->
+          <img id="scroll-spinner" src="common/images/fan.svg" alt="" />
+        </div>
       </aside>
 
       <!-- Hauptinhalt mit Diagrammen & Info-Boxen -->
@@ -106,7 +112,15 @@
     </section>
   </main>
 
-  <script src="common/js/app.js" defer></script>
+  <!-- Zentrale Pfad-Konfig muss vor den anderen Skripten geladen werden -->
+  <script src="common/js/paths.js" defer></script>
+
+  <!-- Eigene Skripte in richtiger Reihenfolge -->
+  <script src="common/js/public.js" defer></script>
+  <script src="common/js/dataLoader.js" defer></script>
+  <script src="common/js/lautstaerke.js" defer></script>
+  <script src="common/js/scrollSpinner.js" defer></script>
+  <script src="common/js/smiley.js" defer></script>
 
 </body>
 </html>
