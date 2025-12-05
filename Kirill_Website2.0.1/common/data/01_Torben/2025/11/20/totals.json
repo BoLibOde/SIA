@@ -1,0 +1,13 @@
+{
+    "good": 10,
+    "meh": 12,
+    "bad": 13,
+    "avg_sensor_day": {
+        "temp": 22.9,
+        "db": 45.1,
+        "co2": 411,
+        "voc": 12,
+        "count": 35
+    },
+    "weekday": "Donnerstag"
+}

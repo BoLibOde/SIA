@@ -1,0 +1,408 @@
+/* Grundlayout */
+body {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  background-color: #f6f8fa;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+/* Überschrift */
+h1 {
+  text-align: center;
+  margin-top: 2rem;
+  color: #004a7c;
+  font-size: 2rem;
+}
+
+h1 .black {
+  color: black; /* für "ebm" */
+}
+
+h1 .blue {
+  color: #007cbc; /* hellblau für "papst" */
+}
+
+.centrieren {
+  border-collapse: separate; /* nötig, damit border-spacing wirkt */
+  border-spacing: 1rem;      /* horizontaler Abstand zwischen Zellen */
+  margin: 1.5rem auto 2rem auto;
+}
+
+.centrieren td {
+  padding: 0.8rem 2rem;
+  background: #e7edf3;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.centrieren td:hover {
+  background: #cfe2f3;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+/* Gesamte Seitenstruktur */
+.page {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1rem 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Hauptinhalt (Sidebar + Diagramme nebeneinander) */
+.inhalt {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Seitenmenü (links) */
+.links {
+
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 1rem;
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.links table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.links th {
+  font-size: 1.1rem;
+  color: #004a7c;
+  text-align: left;
+  border-bottom: 2px solid #e0e6ed;
+  padding-bottom: 0.5rem;
+}
+
+.links td {
+  padding: 0.7rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.links td:hover {
+  background: #f0f7ff;
+  transform: translateX(5px);
+  cursor: pointer;
+}
+
+/* Diagramme rechts */
+.diagramme {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: flex-start;
+}
+
+/* Wrapper für Diagramme + Luftqualitätsanzeige */
+.diagramme-wrapper {
+  display: flex;
+  gap: 2rem; /* Abstand zwischen Diagrammen und Smiley-Box */
+  align-items: flex-start;
+}
+
+/* Diagramm-Karten */
+.chart-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 1rem;
+  min-height: 200px; /* vorher 400px, jetzt höher für Datenanzeige */
+  display: flex;
+  flex-direction: column; /* wichtig für Diagramm + Datenanzeige */
+  justify-content: flex-start;
+}
+.chart-data {
+  margin-top: 20px;
+  text-align: left;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif; /* gleiche Schrift */
+  font-weight: 600;       /* gleiche Gewichtung */
+  color: #004a7c;         /* gleiche Farbe wie Tabellenüberschrift oder wähle #222 für Textfarbe */
+  font-size: 1rem;        /* passt zur Tabelle */
+}
+
+.chart-data p {
+  margin: 4px 0;
+}
+
+.säule,
+.linie {
+  width: 500px;
+  height: 400px;
+}
+
+.box {
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  transition: box-shadow 0.2s;
+}
+
+.box:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+
+.logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 150px;
+  height: auto;
+}
+
+/* Luftqualitäts-Box rechts neben Diagrammen */
+#luftqualitaet-box {
+  text-align: center;
+  background: white;
+  padding: 30px 50px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  flex-shrink: 0; /* verhindert Schrumpfen */
+    max-width: 250px;
+}
+
+/* Smileys */
+.smiley-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.smiley {
+  font-size: 80px;
+  transition: transform 0.3s, filter 0.3s, text-shadow 0.3s;
+  filter: grayscale(1);
+}
+
+.active {
+  transform: scale(1.2);
+  filter: none;
+  text-shadow: 0 0 35px currentColor;
+}
+
+.green { color: #22c55e; }
+.yellow { color: #eab308; }
+.red { color: #ef4444; }
+
+.top-right-button {
+      position: absolute;         /* bleibt beim Scrollen sichtbar */
+      top: 30px;               /* Abstand von oben */
+      right: 30px;             /* Abstand von rechts */
+      background-color: #007cbc; /* Blau */
+      color: white;            /* weiße Schrift */
+      border: none;            /* kein Rand */
+      padding: 10px 20px;      /* Größe */
+      font-size: 16px;         /* Schriftgröße */
+      border-radius: 5px;      /* leicht abgerundete Ecken */
+      cursor: pointer;         /* Zeiger wird zur Hand */
+      transition: background-color 0.3s ease; /* schöner Hover-Effekt */
+    }
+
+    .top-right-button:hover {
+      background-color: #0056b3; /* dunkleres Blau beim Darüberfahren */
+    }
+
+
+    /* Aktiver Zeitraum-Button */
+.centrieren td.active {
+  background-color: #005f99; /* dunkleres Blau als Standard #007cbc */
+  color: white;
+  font-weight: bold;
+  transform: scale(1.05); /* leichtes Vergrößern wie beim Hover */
+}
+
+/* Aktive Abteilung: volle Zeile, aber 10px Abstand /rechts */
+.links tr.active td {
+  background-color: #005f99;  /* dunkleres Blau */
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;          /* sanfte Abrundung */
+  padding: 0.5rem 0.8rem;      /* kompakte Höhe */
+  margin-left: 10px;           /* Abstand links */
+  margin-right: 10px;          /* Abstand rechts */
+  transition: all 0.2s ease;
+  box-sizing: border-box;      /* damit padding/margin nicht überlaufen */
+}
+
+/* Hover über aktive Zelle: keine Veränderung */
+.links tr.active td:hover {
+  background-color: #005f99;
+  cursor: pointer;
+  transform: none;
+}
+
+/* Normale Hover-Zellen */
+.links td:hover {
+  background: #f0f7ff;
+  transform: translateX(2px);
+  cursor: pointer;
+}
+
+/* Lautstärke-Box (unter Luftqualität) */
+#lautstaerke-box {
+  text-align: center;
+  background: white;
+  padding: 30px 50px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  flex-shrink: 0;
+  max-width: 250px;
+  margin-top: 20px; /* Abstand zur Luftqualität */
+}
+
+/* Container für Lautstärke-Icons */
+.lautstaerke-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Lautstärke-Symbole */
+.laut-icon {
+  font-size: 45px;
+  color: #aaa; /* grau standardmäßig */
+  transition: all 0.3s ease;
+  filter: grayscale(1);
+}
+
+/* Aktives Symbol farbig */
+.laut-icon.active {
+  filter: none;
+  color: #007cbc;
+  transform: scale(1.1);
+}
+
+/* Hover-Effekt (optional) */
+.laut-icon:hover {
+  transform: scale(1.15);
+  cursor: default;
+}
+
+/* Vollbild-Lade-Overlay */
+#loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7); /* halbtransparentes Weiß */
+  display: none; /* standardmäßig ausgeblendet */
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(3px);
+}
+
+
+
+/* Wrapper unter der Abteilungen-Liste */
+.svg-spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;     /* Abstand unter der Tabelle */
+  width: 100%;
+  pointer-events: none; /* verhindert, dass die SVG Klicks abfängt */
+}
+
+/* SVG (als IMG) Styling */
+#scroll-spinner {
+  display: block;
+  width: 120px;         /* Standardgröße — anpassen nach Bedarf */
+  height: auto;
+  opacity: 0.95;
+  transition: transform 0.12s linear, opacity 0.2s ease;
+  will-change: transform;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.06));
+}
+
+/* Kleiner: für schmale Sidebars / mobile */
+@media (max-width: 420px) {
+  #scroll-spinner {
+    width: 90px;
+  }
+}
+
+/* Wenn Benutzer reduzierte Bewegung bevorzugt, keine Animationen */
+@media (prefers-reduced-motion: reduce) {
+  #scroll-spinner {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Optional: leichtes Hover-Highlight (nur visuell, pointer-events still none so no clicks) */
+.svg-spinner-wrapper:hover #scroll-spinner {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+/* Ladeanimation komplett deaktivieren */
+#loader-overlay {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* --- Linke Abteilungsliste fixieren --- */
+aside.links {
+  position: fixed;
+  top: 238px; /* Abstand nach oben (Header-Höhe anpassen) */
+  left: 20px;
+  width: 200px; /* feste Breite, damit Layout stabil bleibt */
+  z-index: 100; /* bleibt über anderem Inhalt */
+  background-color: white; /* Hintergrund, damit nichts durchscheint */
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 10px;
+}
+
+/* --- Hauptinhalt rückt nach rechts --- */
+.diagramme-wrapper {
+  margin-left: 230px; /* Breite von aside.links + etwas Abstand */
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #007cbc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* gap: 10px;  <- Entfernen oder auskommentieren */
+}
+
+.page-title .logo-text {
+  height: 150px;
+  width: auto;
+  position: relative;
+  top: 19px;      /* vertikale Justierung */
+  margin-left: -23px; /* <<< hier stellst du den horizontalen Abstand ein */
+}
+
+
+
+
+
+
+
+
+
+

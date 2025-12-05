@@ -50,6 +50,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+    <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Oguz: Sensor 1.2">
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/common/css/public.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/common/images/fan.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/common/images/icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/common/images/logo.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/common/js/dataLoader.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/common/js/lautstaerke.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/common/js/public.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/common/js/scrollSpinner.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/common/js/smiley.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/data/01_Torben/2025/11/20/totals.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/data/01_Torben/2025/11/20/upload1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/data/01_Torben/2025/11/20/upload2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/data/archive/archive_2025-11-20_13-43-32.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/data/archive/archive_2025-11-20_13-44-40.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/data/devices.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Kirill_Website2.0.1/public.html" afterDir="false" />
     <list default="true" id="3ce9279d-9855-49d3-8053-51091393adfc" name="Changes" comment="Oguz: code ordnung">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
@@ -295,6 +312,8 @@
     <option name="LAST_COMMIT_MESSAGE" value="Oguz: code ordnung" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/SIA$server.coverage" NAME="server Coverage Results" MODIFIED="1763642587795" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/SIA$dummy_generator.coverage" NAME="dummy_generator Coverage Results" MODIFIED="1761810746116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SIA$device.coverage" NAME="device Coverage Results" MODIFIED="1763642581367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
