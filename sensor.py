@@ -1,25 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-sensor.py
+sensor.py (updated)
 
-Improved sensor module (based on original) with more robust CCS811 baseline
-restore/save behavior and better SMBus handling.
-
-Main points of change:
-- Prefer smbus2 if available, fall back to smbus.
-- CCS811.init: restore baseline from file (if present) after APP_START and
-  verify by reading baseline back. Retries on transient I2C errors.
-- Added explicit restore_baseline_from_file and write_baseline methods.
-- SensorRunner:
-  - Creates baseline_file directory if missing.
-  - Tries a small init/retry sequence to tolerate transient APP_INVALID.
-  - Saves baseline on periodic interval AND on stop() when using real CCS811.
-  - Adds slightly larger startup delay before first access.
-- No external API changes: start(), stop(), sensor_buffer remain the same.
-
-Behavior otherwise is unchanged: device.py can continue to call sensor.start(...)
-and read sensor.sensor_buffer.
+- Reads optional environment variable CCS811_RST_GPIO (BCM pin).
+- On persistent APP_INVALID or repeated corrupted reads, toggles RST GPIO (if configured)
+  and retries initialization.
+- Slightly longer startup delay and more robust init retry sequence.
+- No API changes: start(), stop(), sensor_buffer remain the same.
 """
 from dataclasses import dataclass
 import time
@@ -44,19 +32,26 @@ except Exception:
     except Exception:
         SMBUS_AVAILABLE = False
 
-# --- Public buffer (device.py reads sensor.sensor_buffer) ---
+# Optional GPIO for RST
+try:
+    import RPi.GPIO as GPIO
+    RPI_GPIO_AVAILABLE = True
+except Exception:
+    RPI_GPIO_AVAILABLE = False
+
+# --- Public buffer ---
 sensor_buffer = []
 
 # --- Sample dataclass ---
 @dataclass
 class SensorSample:
-    temp: float   # degrees C
-    db: float     # decibels (mic input) or 0 if not used
-    co2: int      # eCO2 ppm
-    voc: int      # TVOC ppb
-    ts: float     # epoch timestamp
+    temp: float
+    db: float
+    co2: int
+    voc: int
+    ts: float
 
-# --- CCS811 specifics ---
+# CCS811 specifics
 _CCS_ADDR_DEFAULT = 0x5A
 _CCS_REG_STATUS = 0x00
 _CCS_REG_MEAS_MODE = 0x01
@@ -70,36 +65,38 @@ _CCS_STATUS_DATA_READY = 0x08
 _CCS_STATUS_ERROR = 0x01
 _CCS_STATUS_APP_VALID = 0x10
 
-# drive mode values
-_DRIVE_MODE_VALUES = {0:0x00, 1:0x10, 2:0x20, 3:0x30, 4:0x40}
+_DRIVE_MODE_VALUES = {0:0x00,1:0x10,2:0x20,3:0x30,4:0x40}
 
-# default baseline file (relative to module directory)
 _BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 os.makedirs(_BASE_DIR, exist_ok=True)
 _DEFAULT_BASELINE_FILE = os.path.join(_BASE_DIR, "ccs811_baseline.bin")
 
-# max buffer size
-_MAX_BUFFER = 600  # keep recent samples
+_MAX_BUFFER = 600
 
-# --- CCS811 wrapper ---
+# Read optional RST pin from environment (BCM numbering). Set to -1 if not provided.
+try:
+    CCS811_RST_GPIO = int(os.getenv("CCS811_RST_GPIO", "-1"))
+except Exception:
+    CCS811_RST_GPIO = -1
+
 class CCS811:
-    def __init__(self, busnum=1, address=_CCS_ADDR_DEFAULT, baseline_file=_DEFAULT_BASELINE_FILE, logger=_LOG):
+    def __init__(self, busnum=1, address=_CCS_ADDR_DEFAULT, baseline_file=_DEFAULT_BASELINE_FILE, logger=_LOG, post_start_delay=0.25):
         self.busnum = busnum
         self.address = address
         self.baseline_file = baseline_file
         self.logger = logger
         self.bus = None
         self.inited = False
+        self.post_start_delay = post_start_delay
 
         if not SMBUS_AVAILABLE:
-            raise RuntimeError("smbus/smbus2 not available on this platform")
+            raise RuntimeError("smbus/smbus2 not available")
 
         try:
             self.bus = SMBus(self.busnum)
         except Exception as e:
             raise RuntimeError(f"Failed to open I2C bus {self.busnum}: {e}")
 
-    # low-level safe wrappers
     def _read_byte(self, reg, retries=3, delay=0.05):
         for i in range(retries):
             try:
@@ -130,51 +127,42 @@ class CCS811:
                     continue
                 raise
 
-    def init(self, restore_baseline=True, drive_mode=1, interrupt=False):
-        """
-        Initialize CCS811 robustly:
-        - check HW_ID
-        - check APP_VALID in STATUS
-        - send APP_START
-        - optionally restore baseline (write then verify)
-        - set MEAS_MODE
-        """
+    def init(self, restore_baseline=True, drive_mode=1, interrupt=False, verify_after_restore=True):
         hw = self._read_byte(_CCS_REG_HW_ID)
         if hw != 0x81:
-            raise RuntimeError(f"Unexpected HW_ID 0x{hw:02X} (expected 0x81)")
+            raise RuntimeError(f"Unexpected HW_ID 0x{hw:02X}")
 
         status = self._read_byte(_CCS_REG_STATUS)
         if not (status & _CCS_STATUS_APP_VALID):
-            raise RuntimeError(f"APP_VALID not set (STATUS=0x{status:02X}) - application firmware missing")
+            raise RuntimeError(f"APP_VALID not set (STATUS=0x{status:02X})")
 
-        # APP_START (command only)
+        # APP_START
         try:
-            # write_byte(address, value) sends a command byte; that's used here for APP_START
             self.bus.write_byte(self.address, _CCS_CMD_APP_START)
-            # give firmware time to start
-            time.sleep(0.12)
+            time.sleep(self.post_start_delay)
         except Exception as e:
             raise RuntimeError(f"Failed to send APP_START: {e}")
 
-        # restore baseline if requested (write then verify)
-        if restore_baseline and self.baseline_file and os.path.exists(self.baseline_file):
+        # restore baseline if requested
+        if restore_baseline and os.path.exists(self.baseline_file):
             try:
                 b = self._load_baseline_file(self.baseline_file)
                 if b is not None:
                     msb = (b >> 8) & 0xFF
                     lsb = b & 0xFF
-                    # try writing baseline and verify by reading back
                     self._write_block(_CCS_REG_BASELINE, [msb, lsb])
-                    time.sleep(0.05)
-                    try:
-                        rb = self._read_block(_CCS_REG_BASELINE, 2)
-                        read_back = (rb[0] << 8) | rb[1]
-                        if read_back == b:
-                            self.logger.info("Restored baseline 0x%04X from %s (verified)", b, self.baseline_file)
-                        else:
-                            self.logger.warning("Wrote baseline 0x%04X but device reports 0x%04X", b, read_back)
-                    except Exception:
-                        self.logger.warning("Baseline write attempted but verification read failed; continuing")
+                    time.sleep(0.06)
+                    # verify readback optionally
+                    if verify_after_restore:
+                        try:
+                            rb = self._read_block(_CCS_REG_BASELINE, 2)
+                            read_back = (rb[0] << 8) | rb[1]
+                            if read_back == b:
+                                self.logger.info("Restored baseline 0x%04X (verified)", b)
+                            else:
+                                self.logger.warning("Baseline write mismatch: wrote 0x%04X read 0x%04X", b, read_back)
+                        except Exception:
+                            self.logger.warning("Baseline verification read failed")
             except Exception as e:
                 self.logger.warning("Failed to restore baseline: %s", e)
 
@@ -184,17 +172,14 @@ class CCS811:
             val |= 0x08
         try:
             self.bus.write_byte_data(self.address, _CCS_REG_MEAS_MODE, val)
-            time.sleep(0.05)
+            time.sleep(0.06)
         except Exception as e:
             raise RuntimeError(f"Failed to set MEAS_MODE: {e}")
 
         self.inited = True
-        self.logger.info("CCS811 initialized at 0x%02X (mode=%d, interrupt=%s)", self.address, drive_mode, interrupt)
+        self.logger.info("CCS811 initialized (mode=%d)", drive_mode)
 
     def read(self):
-        """
-        Read ALG_RESULT_DATA (8 bytes) and return (eco2, tvoc, status, error_id, raw)
-        """
         raw = self._read_block(_CCS_REG_ALG_RESULT_DATA, 8)
         eco2 = (raw[0] << 8) | raw[1]
         tvoc = (raw[2] << 8) | raw[3]
@@ -202,35 +187,9 @@ class CCS811:
         error_id = raw[5]
         return eco2, tvoc, status, error_id, raw
 
-    def write_env_data(self, humidity_percent, temp_c):
-        """
-        Write ENV_DATA (0x05) per CCS811 format:
-          humidity: uint16 = round(humidity_percent * 512)
-          temperature: uint16 = round((temp_c + 25) * 512)
-        """
-        try:
-            h_raw = int(round(humidity_percent * 512.0)) & 0xFFFF
-            t_raw = int(round((temp_c + 25.0) * 512.0)) & 0xFFFF
-            msb_h = (h_raw >> 8) & 0xFF
-            lsb_h = h_raw & 0xFF
-            msb_t = (t_raw >> 8) & 0xFF
-            lsb_t = t_raw & 0xFF
-            self._write_block(_CCS_REG_ENV_DATA, [msb_h, lsb_h, msb_t, lsb_t])
-        except Exception as e:
-            self.logger.warning("Failed to write ENV_DATA: %s", e)
-
     def read_baseline(self):
         b = self._read_block(_CCS_REG_BASELINE, 2)
         return (b[0] << 8) | b[1]
-
-    def write_baseline(self, baseline):
-        """
-        Write baseline integer value (0..0xFFFF) to device baseline register.
-        """
-        msb = (baseline >> 8) & 0xFF
-        lsb = baseline & 0xFF
-        self._write_block(_CCS_REG_BASELINE, [msb, lsb])
-        time.sleep(0.02)
 
     def save_baseline_file(self, path=None):
         path = path or self.baseline_file
@@ -262,10 +221,8 @@ class CCS811:
         except Exception:
             return None
 
-# --- Simulator (used when no smbus / no hardware) ---
 class Simulator:
     def __init__(self):
-        # start near ambient values
         self.co2 = 415 + random.randint(-10, 10)
         self.tvoc = 10 + random.randint(-3, 3)
         self.t = 22.0 + random.random() - 0.5
@@ -275,7 +232,6 @@ class Simulator:
         _LOG.info("CCS811 simulator initialized")
 
     def read(self):
-        # slowly vary values
         self.co2 += int(random.gauss(0, 1))
         self.tvoc += int(random.gauss(0, 1))
         self.co2 = max(400, min(5000, self.co2))
@@ -287,14 +243,11 @@ class Simulator:
         return self.co2, self.tvoc, status, 0x00, raw
 
     def read_baseline(self):
-        # return synthetic baseline
         return 0xA000
 
     def save_baseline_file(self, path=None):
-        # noop for simulator
         return None
 
-# --- Runner thread / public start/stop API ---
 class SensorRunner:
     def __init__(self, poll_interval=2.0, use_scd=False, use_bme=False, use_mic=False,
                  ccs_bus=1, ccs_addr=_CCS_ADDR_DEFAULT, baseline_file=_DEFAULT_BASELINE_FILE,
@@ -308,19 +261,34 @@ class SensorRunner:
         self.thread = None
         self.lock = threading.Lock()
 
-        # baseline config
         self.baseline_file = baseline_file
         self.baseline_save_interval = baseline_save_interval
-
-        # hardware config
         self.ccs_bus = ccs_bus
         self.ccs_addr = ccs_addr
-
-        # simulation fallback
         self.simulator = None
 
+        # RST config from env
+        self.rst_gpio = CCS811_RST_GPIO if CCS811_RST_GPIO >= 0 else None
+
+    def _toggle_rst(self):
+        if self.rst_gpio is None:
+            return
+        if not RPI_GPIO_AVAILABLE:
+            _LOG.warning("RST GPIO configured but RPi.GPIO not available")
+            return
+        try:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(self.rst_gpio, GPIO.OUT, initial=GPIO.HIGH)
+            GPIO.output(self.rst_gpio, GPIO.LOW)
+            time.sleep(0.15)
+            GPIO.output(self.rst_gpio, GPIO.HIGH)
+            time.sleep(0.25)
+            GPIO.cleanup(self.rst_gpio)
+            _LOG.info("Toggled CCS811 RST via BCM %d", self.rst_gpio)
+        except Exception as e:
+            _LOG.warning("Failed to toggle RST: %s", e)
+
     def _init_ccs(self):
-        # ensure baseline directory exists
         if self.baseline_file:
             d = os.path.dirname(self.baseline_file)
             if d and not os.path.exists(d):
@@ -335,19 +303,23 @@ class SensorRunner:
             self.ccs = self.simulator
             return
 
-        # Try to init up to 2 times to handle transient APP_INVALID on boot
-        for attempt in range(2):
+        # try init several times, toggling RST if APP_INVALID persists
+        attempts = 0
+        while attempts < 4:
+            attempts += 1
             try:
-                self.ccs = CCS811(busnum=self.ccs_bus, address=self.ccs_addr, baseline_file=self.baseline_file)
-                # restore baseline (if present) and start in 1s mode
+                self.ccs = CCS811(busnum=self.ccs_bus, address=self.ccs_addr, baseline_file=self.baseline_file, post_start_delay=0.25)
                 self.ccs.init(restore_baseline=True, drive_mode=1, interrupt=False)
-                _LOG.info("CCS811 initialized (attempt %d)", attempt+1)
+                _LOG.info("CCS811 initialized (attempt %d)", attempts)
                 return
             except Exception as e:
-                _LOG.warning("CCS811 init attempt %d failed: %s", attempt+1, e)
-                time.sleep(0.2)
-                # try again; on final failure fall back to simulator
-        _LOG.warning("Falling back to CCS811 simulator after init failures")
+                _LOG.warning("CCS811 init attempt %d failed: %s", attempts, e)
+                time.sleep(0.25)
+                if self.rst_gpio is not None:
+                    _LOG.info("Toggling RST (init recovery)...")
+                    self._toggle_rst()
+                    time.sleep(0.4)
+        _LOG.warning("Falling back to simulator after init failures")
         self.simulator = Simulator()
         self.simulator.init()
         self.ccs = self.simulator
@@ -356,8 +328,7 @@ class SensorRunner:
         if self.running:
             return
         self.running = True
-        # slightly longer warmup before attempting I2C init
-        time.sleep(0.25)
+        time.sleep(0.6)
         self._init_ccs()
         self.thread = threading.Thread(target=self._loop, daemon=True)
         self.thread.start()
@@ -369,7 +340,6 @@ class SensorRunner:
         self.running = False
         if self.thread:
             self.thread.join(timeout=2.0)
-        # Attempt to save baseline on clean stop if using real CCS811
         try:
             if isinstance(self.ccs, CCS811) and self.baseline_file:
                 try:
@@ -385,7 +355,6 @@ class SensorRunner:
         s = SensorSample(temp=float(temp), db=float(db), co2=int(co2), voc=int(voc), ts=time.time())
         with self.lock:
             sensor_buffer.append(s)
-            # trim buffer
             if len(sensor_buffer) > _MAX_BUFFER:
                 del sensor_buffer[0: len(sensor_buffer) - _MAX_BUFFER]
 
@@ -400,70 +369,82 @@ class SensorRunner:
 
     def _loop(self):
         last_baseline_save = time.time()
-        # starting temp/db placeholders (could hook BME or mic here)
         temp = 22.0
         db = 0.0
 
-        # small warmup delay so device is ready
         time.sleep(0.2)
+
+        consecutive_bad = 0
+        BAD_RESET_THRESHOLD = 6
 
         while self.running:
             try:
-                co2 = 0
-                tvoc = 0
                 try:
                     eco2, tvoc, status, errid, raw = self.ccs.read()
                 except Exception as e:
-                    # transient read failure -> attempt reinit once
                     _LOG.warning("CCS read failed: %s", e)
-                    # attempt re-init for hardware backend
                     if isinstance(self.ccs, CCS811):
                         try:
                             self.ccs.init(restore_baseline=True, drive_mode=1)
                             eco2, tvoc, status, errid, raw = self.ccs.read()
                         except Exception as e2:
                             _LOG.error("Re-init/read failed: %s", e2)
-                            # fall back to simulator to keep app running
                             self.simulator = Simulator()
                             self.simulator.init()
                             self.ccs = self.simulator
                             eco2, tvoc, status, errid, raw = self.ccs.read()
                     else:
-                        # simulator error unlikely
                         raise
 
-                # check status/error
                 if status & _CCS_STATUS_ERROR:
-                    # read error id if available and log
                     dec = self._decode_error(errid)
                     _LOG.warning("CCS reported ERROR (STATUS=0x%02X) ERROR_ID=0x%02X -> %s", status, errid, ", ".join(dec))
-                    # if APP_INVALID error (0x02), try re-init once
                     if errid & 0x02 and isinstance(self.ccs, CCS811):
-                        _LOG.info("APP_INVALID detected, attempting re-init")
+                        _LOG.info("APP_INVALID detected; attempting re-init")
                         try:
                             self.ccs.init(restore_baseline=True, drive_mode=1)
                         except Exception as e:
                             _LOG.error("Re-init after APP_INVALID failed: %s", e)
 
-                # produce sample values (temperature & db are placeholders here)
+                # detect corrupted raw patterns and treat as invalid
+                corrupted = all(b in (0xFD,0xFF,0x7F) for b in raw[:8]) or (raw[0] & 0x80 and raw[1] == 0x00)
+                if corrupted:
+                    consecutive_bad += 1
+                    _LOG.warning("Corrupted read detected (cnt=%d) RAW=%s", consecutive_bad, raw)
+                    # try quick retry
+                    try:
+                        time.sleep(0.12)
+                        eco2_r, tvoc_r, status_r, errid_r, raw_r = self.ccs.read()
+                        if not all(b in (0xFD,0xFF,0x7F) for b in raw_r[:8]):
+                            eco2, tvoc, status, errid, raw = eco2_r, tvoc_r, status_r, errid_r, raw_r
+                            consecutive_bad = 0
+                    except Exception:
+                        pass
+                    # if repeated bad reads, try toggling RST if available
+                    if consecutive_bad >= BAD_RESET_THRESHOLD and self.rst_gpio is not None:
+                        _LOG.info("Repeated corrupted reads, toggling RST")
+                        self._toggle_rst()
+                        time.sleep(0.6)
+                        try:
+                            self.ccs.init(restore_baseline=True, drive_mode=1)
+                            consecutive_bad = 0
+                        except Exception:
+                            pass
+                else:
+                    consecutive_bad = 0
+
                 co2 = eco2
                 voc = tvoc
-                # temp/db: if BME or mic implemented, read here. For now keep stable temp and db.
-                # Add slight ambient drift on long runs
                 temp += (random.random() - 0.5) * 0.02
                 db = db * 0.98 + random.random() * 0.5
 
                 self._append_sample(temp, db, co2, voc)
 
-                # periodic baseline save
                 if self.baseline_file and (time.time() - last_baseline_save) >= self.baseline_save_interval:
                     try:
                         if isinstance(self.ccs, CCS811):
                             b = self.ccs.save_baseline_file(self.baseline_file)
                             _LOG.debug("Periodic baseline saved: 0x%04X", b if b is not None else 0)
-                        else:
-                            # simulator - noop
-                            pass
                     except Exception as e:
                         _LOG.warning("Failed to periodic-save baseline: %s", e)
                     last_baseline_save = time.time()
@@ -471,16 +452,12 @@ class SensorRunner:
             except Exception as e:
                 _LOG.exception("Unhandled exception in sensor loop: %s", e)
 
-            # sleep respecting poll_interval
             time.sleep(self.poll_interval)
 
-# Module-level runner that device.py will use
+# Module-level runner
 _RUNNER = None
 
 def start(poll_interval=2.0, use_scd=False, use_bme=False, use_mic=False):
-    """
-    Start sensor sampling in background. device.py calls this.
-    """
     global _RUNNER
     if _RUNNER and _RUNNER.running:
         _LOG.info("Sensor already running")
