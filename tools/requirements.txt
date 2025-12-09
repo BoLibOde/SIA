@@ -5,7 +5,6 @@ adafruit-blinka
 adafruit_ccs811
 adafruit-python-shell
 adafruit-circuitpython-ccs811
-busio
 # Use Pimoroni scd4x-python as the SCD4x driver:
 git+https://github.com/pimoroni/scd4x-python.git
 adafruit-circuitpython-bme280
