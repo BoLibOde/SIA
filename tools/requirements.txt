@@ -1,18 +1,21 @@
-pygame
-requests
-rpi.gpio
-adafruit-blinka
-adafruit_ccs811
-adafruit-python-shell
-adafruit-circuitpython-ccs811
-# Use Pimoroni scd4x-python as the SCD4x driver:
-git+https://github.com/pimoroni/scd4x-python.git
-adafruit-circuitpython-bme280
-adafruit-circuitpython-busdevice
-smbus
+# Consolidated Python requirements for the SIA project.
+# Core runtime packages used by the code in this repository.
+Flask>=2.0
+requests>=2.25
+smbus2>=0.4.1
+pygame>=2.0
 
-# Optional microphone backends:
-# - CircuitPython driver for ICS43434 (on supported Blinka/CircuitPython boards):
-#   pip install adafruit-circuitpython-ics43434
-# - Linux host fallback (recommended on Raspberry Pi):
-#   pip install sounddevice numpy
+# Optional / hardware-specific packages (install only if using those features)
+# - RPi.GPIO is typically used on Raspberry Pi for GPIO control (optional).
+# - The Adafruit CircuitPython sensor drivers are only required for legacy/alternate
+#   sensor implementations found in tools/ and sketches/ (optional).
+RPi.GPIO>=0.7.0
+adafruit-circuitpython-bme280>=3.0.0
+adafruit-circuitpython-scd4x>=1.0.0
+
+# Notes:
+# - The 'smbus' module imported in some scripts is usually provided by the OS package
+#   (Debian/Ubuntu/Raspbian) python3-smbus. If you cannot install the OS package,
+#   use smbus2 (included above) as a pure-Python alternative.
+# - If you need reproducible installs, replace >= with == and pin specific versions.
+# - Flask pulls in its own dependencies (Jinja2, Werkzeug, etc.) automatically.
