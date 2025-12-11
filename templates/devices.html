@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Device Manager</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/static/css/devices.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Device Manager</h1>
+    <p>List and assign human-readable names/locations to devices. Data is stored in common/data/devices.json.</p>
+
+    <div class="controls">
+      <input id="newDeviceId" placeholder="New device id (e.g. 01_Torben)" />
+      <input id="newDeviceName" placeholder="Display name / location" />
+      <button id="btnAdd">Add / Set</button>
+      <button id="btnRefresh">Refresh</button>
+      <span id="status"></span>
+    </div>
+
+    <table id="devicesTable">
+      <thead>
+        <tr>
+          <th>Device ID</th>
+          <th>Display name</th>
+          <th>Created</th>
+          <th>Last upload</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p class="note">Tip: click "Set" to create or update a device's display name. The server will create device entries automatically on upload as well.</p>
+  </div>
+
+  <script src="/static/js/devices.js"></script>
+</body>
+</html>

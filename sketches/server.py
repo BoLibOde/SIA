@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify
 import json
 from datetime import datetime
 import threading
@@ -16,11 +16,10 @@ try:
 except:
     pass
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
+app = Flask(__name__)
 
 # --- Basisordner für Server-Daten ---
-# Use common/data so this is a shared location for the website and device uploads
-BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "common", "data")
+BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Kirill_Website/data")
 os.makedirs(BASE_DIR, exist_ok=True)
 
 ARCHIVE_DIR = os.path.join(BASE_DIR, "archive")
@@ -118,17 +117,14 @@ def update_daily_totals_async(dir_path, good, meh, bad, avg_sensor, count_new):
             total_count = int(totals["avg_sensor_day"].get("count",0))
             if count_new > 0:
                 try:
-                    # Update temperature/db/co2
                     totals["avg_sensor_day"]["temp"] = round(
-                        (totals["avg_sensor_day"]["temp"] * total_count + avg_sensor.get("temp",0) * count_new) / (total_count + count_new), 1)
+                        (totals["avg_sensor_day"]["temp"] * total_count + avg_sensor["temp"] * count_new) / (total_count + count_new), 1)
                     totals["avg_sensor_day"]["db"] = round(
-                        (totals["avg_sensor_day"]["db"] * total_count + avg_sensor.get("db",0) * count_new) / (total_count + count_new), 1)
+                        (totals["avg_sensor_day"]["db"] * total_count + avg_sensor["db"] * count_new) / (total_count + count_new), 1)
                     totals["avg_sensor_day"]["co2"] = int(
-                        (totals["avg_sensor_day"]["co2"] * total_count + avg_sensor.get("co2",0) * count_new) / (total_count + count_new))
-                    # VOC may be missing: only update if present in payload
-                    if "voc" in avg_sensor and avg_sensor.get("voc") is not None:
-                        totals["avg_sensor_day"]["voc"] = int(
-                            (totals["avg_sensor_day"]["voc"] * total_count + avg_sensor.get("voc",0) * count_new) / (total_count + count_new))
+                        (totals["avg_sensor_day"]["co2"] * total_count + avg_sensor["co2"] * count_new) / (total_count + count_new))
+                    totals["avg_sensor_day"]["voc"] = int(
+                        (totals["avg_sensor_day"]["voc"] * total_count + avg_sensor["voc"] * count_new) / (total_count + count_new))
                     totals["avg_sensor_day"]["count"] = total_count + count_new
                 except Exception:
                     pass
@@ -193,6 +189,7 @@ def daily_archive_scheduler():
 def live_daily_dashboard():
     def worker():
         while True:
+            # Devices-Datei laden (falls vorhanden)
             devices_json_path = os.path.join(BASE_DIR, "devices.json")
             try:
                 if os.path.exists(devices_json_path):
@@ -212,6 +209,7 @@ def live_daily_dashboard():
                 if not os.path.isdir(device_path) or device_id == "archive":
                     continue
 
+                # Gerätename aus devices.json laden, falls vorhanden
                 device_meta = devices_info.get(device_id, {})
                 display_name = device_meta.get("name", "unbekannt")
                 created = device_meta.get("created", "?")
@@ -271,13 +269,12 @@ def upload():
     update_devices_json(device_id)  # <---- hier wird devices.json aktualisiert
 
     events = data.get("events", [])
-    avg_sensor = data.get("avg_sensor", {"temp":0,"db":0,"co2":0})
+    avg_sensor = data.get("avg_sensor", {"temp":0,"db":0,"co2":0,"voc":0})
     count_new = len(events) if events else 1
 
-    # NOTE: original client used 'kind' or other field; keep computing totals from events
-    good = sum(1 for e in events if e.get("type")=="good" or e.get("kind")=="good")
-    meh  = sum(1 for e in events if e.get("type")=="meh" or e.get("kind")=="meh")
-    bad  = sum(1 for e in events if e.get("type")=="bad" or e.get("kind")=="bad")
+    good = sum(1 for e in events if e.get("type")=="good")
+    meh  = sum(1 for e in events if e.get("type")=="meh")
+    bad  = sum(1 for e in events if e.get("type")=="bad")
 
     upload_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data_to_save = {
@@ -339,15 +336,9 @@ def get_devices():
     devices = load_json(DEVICES_FILE, {})
     return jsonify(devices)
 
-@app.route("/device_meta/<device_id>", methods=["GET"])
-def get_device_meta(device_id):
-    """Return metadata (created, last_upload, name) for a given device_id"""
-    devices = load_json(DEVICES_FILE, {})
-    return jsonify(devices.get(device_id, {}))
-
 @app.route("/set_device_name", methods=["POST"])
 def set_device_name():
-    """Set or change a device's display/location name"""
+    """Setzt oder ändert den Standort-/Anzeigenamen eines Geräts"""
     data = request.get_json()
     device_id = data.get("device_id")
     name = data.get("name")
@@ -366,19 +357,6 @@ def set_device_name():
     return jsonify({"status": "ok", "message": f"Name für {device_id} gesetzt auf '{name}'"}), 200
 
 # =========================================================
-# ================ MANAGEMENT UI ==========================
-# Small single-page UI to list devices and edit names.
-# =========================================================
-
-@app.route("/manage", methods=["GET"])
-def manage_ui():
-    # Renders templates/devices.html
-    return render_template("devices.html")
-
-# Serve static files (JS/CSS) from the static folder automatically via Flask's static routing.
-# Example access to JS: /static/js/devices.js
-
-# =========================================================
 # ================ SERVER START ==========================
 # =========================================================
 
@@ -386,5 +364,5 @@ if __name__=="__main__":
     archive_old_years_zip()
     daily_archive_scheduler()
     live_daily_dashboard()
-    print(f"🚀 Server gestartet auf http://0.0.0.0:5000 (data directory: {BASE_DIR})")
+    print(f"🚀 Server gestartet auf http://0.0.0.0:5000")
     app.run(host="0.0.0.0", port=5000, threaded=True)

@@ -1,0 +1,60 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f7f7f9;
+  color: #222;
+  margin: 0;
+  padding: 1rem;
+}
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+h1 {
+  margin-top: 0;
+}
+.controls {
+  margin-bottom: 0.75rem;
+}
+.controls input {
+  padding: 6px 8px;
+  margin-right: 6px;
+  width: 220px;
+}
+.controls button {
+  padding: 6px 10px;
+}
+#status {
+  margin-left: 12px;
+  color: #666;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead th {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 1px solid #e6e6e6;
+}
+tbody td {
+  padding: 8px 6px;
+  border-bottom: 1px dashed #eee;
+  vertical-align: middle;
+}
+input.nameField {
+  width: 100%;
+  padding: 6px 6px;
+  box-sizing: border-box;
+}
+button.saveBtn {
+  padding: 4px 8px;
+  margin-left: 6px;
+}
+.note {
+  color: #666;
+  font-size: 0.9rem;
+}

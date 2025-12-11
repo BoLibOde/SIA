@@ -16,7 +16,7 @@ _LOG = logging.getLogger("run_ui_debug")
 
 # Import the modules
 try:
-    import device
+    from sketches import device
     import ui
 except Exception as e:
     _LOG.exception("Failed to import device or ui: %s", e)

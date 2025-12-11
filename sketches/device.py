@@ -18,9 +18,9 @@ import os
 import argparse
 import logging
 from datetime import datetime
-from typing import Tuple, Optional
+from typing import Tuple
 
-import sensor  # ensure this module is the SCD41-only sensor module
+import sensor  # sensor is allowed to start/stop from main
 
 # --- Configuration ---
 SERVER_URL = "http://127.0.0.1:5000/upload"
@@ -29,23 +29,7 @@ BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 os.makedirs(BASE_DIR, exist_ok=True)
 
 # --- Device ID ---
-# DEVICE_ID can be provided via environment variable DEVICE_ID or a device_id.txt file inside BASE_DIR.
-# Fallback to a default if neither is present.
-_device_id_env = os.environ.get("DEVICE_ID")
-_device_id_file = os.path.join(BASE_DIR, "device_id.txt")
-if _device_id_env:
-    DEVICE_ID = _device_id_env
-elif os.path.exists(_device_id_file):
-    try:
-        with open(_device_id_file, "r", encoding="utf-8") as f:
-            DEVICE_ID = f.read().strip()
-            if not DEVICE_ID:
-                DEVICE_ID = "01_Torben"
-    except Exception:
-        DEVICE_ID = "01_Torben"
-else:
-    DEVICE_ID = "01_Torben"
-
+DEVICE_ID = "01_Torben"
 print(f"[INFO] Client-ID: {DEVICE_ID}")
 
 # --- Logging ---
@@ -163,41 +147,20 @@ def calculate_avg_smiley(good: int, meh: int, bad: int):
 def avg_sensor_values():
     buf = sensor.sensor_buffer
     if not buf:
-        return {"temp":0,"db":0,"co2":0}  # no voc key if unavailable
+        return {"temp":0,"db":0,"co2":0,"voc":0}
+    # sensor_buffer may contain SensorSample objects or legacy tuples
     try:
+        # dataclass-like
         t = sum(getattr(s, "temp", s[0]) for s in buf) / len(buf)
         d = sum(getattr(s, "db", s[1]) for s in buf) / len(buf)
         c = sum(getattr(s, "co2", s[2]) for s in buf) / len(buf)
-        # collect voc values only when present and not None
-        voc_vals = []
-        for s in buf:
-            v = getattr(s, "voc", None)
-            if v is None:
-                # legacy tuple support: check index 3 if object is tuple-like
-                try:
-                    v = s[3]
-                except Exception:
-                    v = None
-            if v is not None:
-                voc_vals.append(v)
-        result = {"temp":round(t,1),"db":round(d,1),"co2":int(c)}
-        if voc_vals:
-            v_avg = int(sum(voc_vals)/len(voc_vals))
-            result["voc"] = v_avg
+        v = sum(getattr(s, "voc", s[3]) for s in buf) / len(buf)
     except Exception:
         t = sum(s[0] for s in buf)/len(buf)
         d = sum(s[1] for s in buf)/len(buf)
         c = sum(s[2] for s in buf)/len(buf)
-        # legacy tuple path: include voc if present
-        try:
-            vlist = [s[3] for s in buf if len(s) > 3 and s[3] is not None]
-            if vlist:
-                v_avg = int(sum(vlist)/len(vlist))
-                return {"temp":round(t,1),"db":round(d,1),"co2":int(c),"voc":v_avg}
-        except Exception:
-            pass
-        return {"temp":round(t,1),"db":round(d,1),"co2":int(c)}
-    return result
+        v = sum(s[3] for s in buf)/len(buf)
+    return {"temp":round(t,1),"db":round(d,1),"co2":int(c),"voc":int(v)}
 
 def upload_to_server(avg_sensor, events_list):
     global upload_failed_time
@@ -260,7 +223,7 @@ def get_latest_sensor():
             return sensor.sensor_buffer[-1]
         except Exception:
             pass
-    return (22.0, 0.0, 410, None)
+    return (22.0, 0.0, 410, 10)
 
 def on_vote(kind: str):
     """
