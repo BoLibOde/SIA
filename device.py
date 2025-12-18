@@ -115,47 +115,15 @@ def save_smiley_state():
 
 load_smiley_state()
 
-# Rotation logic used by calculate_avg_smiley (keeps a simple rotating display)
-ROTATION_ORDER = ["good", "meh", "bad"]
-ROTATION_INTERVAL = 1.5
-_rotation_idx = 0
-_rotation_last = time.time()
-
+# Helper for percentage rounding
 def pct_round(good: int, meh: int, bad: int) -> Tuple[int,int,int]:
     total = good + meh + bad
     if total == 0:
-        return 0,0,0
-    fg = (good / total) * 100.0
-    fm = (meh / total) * 100.0
-    fb = (bad / total) * 100.0
-    ig = int(fg)
-    im = int(fm)
-    ib = int(fb)
-    remainder = 100 - (ig + im + ib)
-    fracs = [ (fg - ig, 'g'), (fm - im, 'm'), (fb - ib, 'b') ]
-    fracs.sort(reverse=True)
-    for i in range(remainder):
-        if fracs[i % 3][1] == 'g':
-            ig += 1
-        elif fracs[i % 3][1] == 'm':
-            im += 1
-        else:
-            ib += 1
-    return ig, im, ib
-
-def calculate_avg_smiley(good: int, meh: int, bad: int):
-    """
-    Return (kind, (pct_good,pct_meh,pct_bad)).
-    Uses rotation for kind to reproduce v7 behavior.
-    """
-    global _rotation_idx, _rotation_last
-    pct_good, pct_meh, pct_bad = pct_round(good, meh, bad)
-    now = time.time()
-    if now - _rotation_last >= ROTATION_INTERVAL:
-        _rotation_idx = (_rotation_idx + 1) % len(ROTATION_ORDER)
-        _rotation_last = now
-    kind = ROTATION_ORDER[_rotation_idx]
-    return kind, (pct_good, pct_meh, pct_bad)
+        return 0, 0, 0
+    fg = int((good / total) * 100)
+    fm = int((meh / total) * 100)
+    fb = 100 - fg - fm
+    return fg, fm, fb
 
 # =========================================================
 # ================ SENSOR / UPLOAD HELPERS ===============
@@ -163,70 +131,59 @@ def calculate_avg_smiley(good: int, meh: int, bad: int):
 def avg_sensor_values():
     buf = sensor.sensor_buffer
     if not buf:
-        return {"temp":0,"db":0,"co2":0}  # no voc key if unavailable
+        return {"temp": 0, "db": 0, "co2": 0}  # no voc key if unavailable
     try:
-        t = sum(getattr(s, "temp", s[0]) for s in buf) / len(buf)
-        d = sum(getattr(s, "db", s[1]) for s in buf) / len(buf)
-        c = sum(getattr(s, "co2", s[2]) for s in buf) / len(buf)
-        # collect voc values only when present and not None
-        voc_vals = []
-        for s in buf:
-            v = getattr(s, "voc", None)
-            if v is None:
-                # legacy tuple support: check index 3 if object is tuple-like
-                try:
-                    v = s[3]
-                except Exception:
-                    v = None
-            if v is not None:
-                voc_vals.append(v)
-        result = {"temp":round(t,1),"db":round(d,1),"co2":int(c)}
-        if voc_vals:
-            v_avg = int(sum(voc_vals)/len(voc_vals))
-            result["voc"] = v_avg
-    except Exception:
-        t = sum(s[0] for s in buf)/len(buf)
-        d = sum(s[1] for s in buf)/len(buf)
-        c = sum(s[2] for s in buf)/len(buf)
-        # legacy tuple path: include voc if present
-        try:
-            vlist = [s[3] for s in buf if len(s) > 3 and s[3] is not None]
-            if vlist:
-                v_avg = int(sum(vlist)/len(vlist))
-                return {"temp":round(t,1),"db":round(d,1),"co2":int(c),"voc":v_avg}
-        except Exception:
-            pass
-        return {"temp":round(t,1),"db":round(d,1),"co2":int(c)}
-    return result
+        temp = round(sum(s.temp for s in buf) / len(buf), 1)
+        db = round(sum(s.db for s in buf) / len(buf), 1)
+        co2 = round(sum(s.co2 for s in buf) / len(buf), 0)
+        voc_values = [s.voc for s in buf if s.voc is not None]
+        if voc_values:
+            voc = round(sum(voc_values) / len(voc_values), 0)
+        else:
+            voc = None
+        result = {"temp": temp, "db": db, "co2": int(co2)}
+        if voc is not None:
+            result["voc"] = int(voc)
+        return result
+    except Exception as e:
+        _LOG.exception("Error computing avg sensor values: %s", e)
+        return {"temp": 0, "db": 0, "co2": 0}
 
 def upload_to_server(avg_sensor, events_list):
     global upload_failed_time
     payload = {"device_id": DEVICE_ID, "events": events_list, "avg_sensor": avg_sensor}
     try:
-        r = requests.post(SERVER_URL, json=payload, timeout=5)
-        if r.status_code == 200:
-            _LOG.info("✅ Upload erfolgreich: %s", r.json())
+        _LOG.info("Uploading to server with payload: %s", payload)
+        response = requests.post(SERVER_URL, json=payload, timeout=5)
+        if response.status_code == 200:
+            _LOG.info("✅ Upload successful: %s", response.json())
         else:
-            _LOG.warning("❌ Fehler beim Upload: Status %s | %s", r.status_code, r.text)
+            _LOG.warning("❌ Upload failed — Status: %s | Response: %s", response.status_code, response.text)
             upload_failed_time = time.time()
+    except requests.exceptions.Timeout:
+        _LOG.error("⚠️ Upload timeout.")
+        upload_failed_time = time.time()
     except Exception as e:
-        _LOG.warning("⚠️ Upload fehlgeschlagen: %s", e)
+        _LOG.exception("Unhandled error during upload: %s", e)
         upload_failed_time = time.time()
 
 def upload_cycle():
     global events, upload_counter, upload_history
-    now = datetime.now()
-    upload_counter += 1
-    avg_sensor = avg_sensor_values()
-    threading.Thread(target=upload_to_server, args=(avg_sensor, events.copy()), daemon=True).start()
-    events.clear()
     try:
-        sensor.sensor_buffer.clear()
-    except Exception:
-        pass
-    upload_history.append((now.strftime("%Y-%m-%d"), upload_counter))
-    _LOG.debug("upload_cycle: uploaded #%d", upload_counter)
-    save_smiley_state()
+        now = datetime.now()
+        upload_counter += 1
+        avg_sensor = avg_sensor_values()
+        threading.Thread(target=upload_to_server, args=(avg_sensor, events.copy()), daemon=True).start()
+        events.clear()
+        try:
+            sensor.sensor_buffer.clear()
+        except Exception:
+            pass
+        upload_history.append((now.strftime("%Y-%m-%d"), upload_counter))
+        _LOG.debug("upload_cycle: Uploaded #%d", upload_counter)
+        save_smiley_state()
+    except Exception as e:
+        _LOG.exception("Unhandled error in upload_cycle: %s", e)
 
 def check_scheduled_upload():
     now = datetime.now()
@@ -244,92 +201,33 @@ good = meh = bad = 0
 def get_counts() -> Tuple[int,int,int]:
     return good, meh, bad
 
-def get_override_info():
-    return current_smiley_kind, smiley_override_time, SMILEY_OVERRIDE_DURATION
-
-def get_upload_info():
-    return upload_failed_time, UPLOAD_FAILED_DURATION
-
-def get_latest_sensor():
-    """
-    Return newest sensor sample (SensorSample object) if present,
-    otherwise a fallback tuple (temp, db, co2, voc)
-    """
-    if sensor.sensor_buffer:
-        try:
-            return sensor.sensor_buffer[-1]
-        except Exception:
-            pass
-    return (22.0, 0.0, 410, None)
-
 def on_vote(kind: str):
     """
-    Called by UI when user votes.
+    Called by UI when user votes. Updates smiley counters.
     """
-    global good, meh, bad, current_smiley_kind, smiley_override_time, smiley_ema
-    ts = time.time()
+    global good, meh, bad
+    timestamp = time.time()
     if kind == "good":
         good += 1
     elif kind == "meh":
         meh += 1
-    else:
+    elif kind == "bad":
         bad += 1
-    current_smiley_kind = kind
-    smiley_override_time = ts
-    # update EMA
-    val = 1.0 if kind == "good" else (0.0 if kind == "meh" else -1.0)
-    smiley_ema = (SMILEY_EMA_ALPHA * val) + ((1 - SMILEY_EMA_ALPHA) * smiley_ema)
-    events.append({"kind": kind, "ts": ts})
+    events.append({"kind": kind, "timestamp": timestamp})
 
 def on_upload():
     upload_cycle()
 
-# Load persisted smiley state at import time
-load_smiley_state()
-
 # =========================================================
 # ================ START UI when run directly =============
 # =========================================================
-def _start_and_run_ui():
-    # parse command line args here (only when running as script)
-    args = parser.parse_args()
-    POLL_INTERVAL = args.interval
-    USE_SCD = args.use_scd
-    USE_BME = args.use_bme
-    USE_MIC = args.use_mic
-
-    # Start sensor thread (simulator on desktop if no hardware)
-    sensor.start(poll_interval=POLL_INTERVAL, use_scd=USE_SCD, use_bme=USE_BME, use_mic=USE_MIC)
-    _LOG.info("Started sensors (simulator/hardware depending on environment)")
-
-    # Import UI here to avoid circular imports at module import time
-    import ui
-    # Call UI.run with callbacks
-    ui.run(
-        get_counts,
-        get_override_info,
-        get_upload_info,
-        get_latest_sensor,
-        calculate_avg_smiley,
-        pct_round,
-        on_vote,
-        on_upload
-    )
-
-    # UI returned (window closed) — clean up
-    sensor.stop()
-    save_smiley_state()
-    # optionally do one last upload
-    try:
-        upload_cycle()
-    except Exception:
-        pass
-
 if __name__ == "__main__":
     try:
-        _start_and_run_ui()
+        args = parser.parse_args()
+        POLL_INTERVAL = args.interval
+        sensor.start(poll_interval=POLL_INTERVAL, use_scd=args.use_scd, use_bme=args.use_bme, use_mic=args.use_mic)
     except Exception as e:
-        _LOG.exception("Fatal error running UI: %s", e)
+        _LOG.exception("Fatal startup error: %s", e)
         try:
             sensor.stop()
         except Exception:
