@@ -67,6 +67,7 @@ class SCD41:
             self.bus = SMBus(busnum)
         except Exception as e:
             raise RuntimeError(f"Failed to open I2C bus {busnum}: {e}")
+        self.logger.info("SCD41 initialized on I2C bus %s, address 0x%02X", busnum, self.address)
 
     @staticmethod
     def _crc8(buf):
