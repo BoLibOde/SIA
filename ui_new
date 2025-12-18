@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+ui.py
+
+Pygame-basierte Anzeige und Eventloop.
+Ensures proper integration with `device.py` callbacks for state updates.
+"""
+import pygame
+import time
+import logging
+import os
+
+_LOG = logging.getLogger("ui")
+
+# Media directory setup
+HERE = os.path.dirname(os.path.abspath(__file__))
+MEDIA_DIR = os.path.join(HERE, "Media")
+
+def _debug_media_listing():
+    try:
+        if os.path.isdir(MEDIA_DIR):
+            files = sorted(os.listdir(MEDIA_DIR))
+            _LOG.info("Media dir resolved to: %s", MEDIA_DIR)
+            _LOG.info("Media contents: %s", files)
+        else:
+            _LOG.warning("Media dir not found at resolved path: %s", MEDIA_DIR)
+    except Exception:
+        _LOG.exception("Error while listing Media dir")
+
+def load_font(path, size):
+    candidate = os.path.join(MEDIA_DIR, path)
+    try:
+        return pygame.font.Font(candidate, size)
+    except Exception:
+        _LOG.warning("Font %s not found; using default font.", path)
+        return pygame.font.SysFont(None, size)
+
+def load_image(path, fallback_color, size=None):
+    candidate = os.path.join(MEDIA_DIR, path)
+    try:
+        img = pygame.image.load(candidate).convert_alpha()
+        if size:
+            img = pygame.transform.smoothscale(img, size)
+        return img
+    except Exception:
+        _LOG.warning("Image %s not found; using fallback placeholder.", path)
+        width, height = size if size else (200, 200)
+        surf = pygame.Surface((width, height), pygame.SRCALPHA)
+        surf.fill(fallback_color)
+        return surf
+
+def _normalize_latest(latest):
+    """
+    Accept SensorSample-like object or legacy tuple/list.
+    Return (temp, db, co2, voc).
+    """
+    try:
+        if latest and hasattr(latest, "temp"):
+            return float(latest.temp), float(latest.db), int(latest.co2), latest.voc or 0
+    except Exception:
+        pass
+    return 22.0, 0.0, 410, 0  # Default values
+
+def run(get_counts, get_override_info, get_upload_info, get_latest_sensor,
+        calculate_avg_smiley, pct_round, on_vote, on_upload):
+    """
+    Initializes the UI and handles the Pygame event loop.
+    """
+    pygame.init()
+    _debug_media_listing()
+
+    screen = pygame.display.set_mode((1024, 600))
+    pygame.display.set_caption("Smiley + Sensoranzeige")
+    clock = pygame.time.Clock()
+
+    # Load media assets
+    sensor_font = load_font("Silkscreen/Silkscreen-Regular.ttf", 28)
+    mood_font = load_font("Silkscreen/Silkscreen-Regular.ttf", 28)
+    big_good = load_image("good.png", (0, 255, 0), (200, 200))
+    big_meh = load_image("meh.png", (255, 200, 0), (200, 200))
+    big_bad = load_image("bad.png", (255, 0, 0), (200, 200))
+    small_good = pygame.transform.smoothscale(big_good, (48, 48))
+    small_meh = pygame.transform.smoothscale(big_meh, (48, 48))
+    small_bad = pygame.transform.smoothscale(big_bad, (48, 48))
+    kind_to_small = {"good": small_good, "meh": small_meh, "bad": small_bad}
+    kind_to_big = {"good": big_good, "meh": big_meh, "bad": big_bad}
+
+    running = True
+    while running:
+        now = time.time()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_g:
+                    on_vote("good")
+                elif event.key == pygame.K_m:
+                    on_vote("meh")
+                elif event.key == pygame.K_b:
+                    on_vote("bad")
+                elif event.key == pygame.K_RETURN:
+                    on_upload()
+
+        # Fetch state
+        try:
+            good, meh, bad = get_counts()
+            current_kind, smiley_override_time, SMILEY_OVERRIDE_DURATION = get_override_info()
+            upload_failed_time, UPLOAD_FAILED_DURATION = get_upload_info()
+            latest_sensor = get_latest_sensor()
+            temp, db, co2, voc = _normalize_latest(latest_sensor)
+        except Exception as e:
+            _LOG.error("Error fetching data from callbacks: %s", e)
+            continue
+
+        # Draw background
+        screen.fill((0, 0, 0))
+
+        # Mood scale
+        left_margin, right_margin, y_pos = 110, 914, 80
+        pygame.draw.line(screen, (255, 255, 255), (left_margin, y_pos), (right_margin, y_pos), 4)
+
+        # Small smiley position
+        total = good + meh + bad
+        score = (good - bad) / total if total else 0.0
+        frac = (score + 1.0) / 2.0
+        frac = max(0, min(1, frac))
+        small_smiley_x = left_margin + frac * (right_margin - left_margin)
+        small_smiley = kind_to_small["meh"]
+        if score > 0.33:
+            small_smiley = kind_to_small["good"]
+        elif score < -0.33:
+            small_smiley = kind_to_small["bad"]
+        screen.blit(small_smiley, (small_smiley_x - 24, y_pos - 24))
+
+        # Big smiley
+        if now - smiley_override_time < SMILEY_OVERRIDE_DURATION and current_kind:
+            big_img = kind_to_big.get(current_kind, kind_to_big["meh"])
+        else:
+            kind, _ = calculate_avg_smiley(good, meh, bad)
+            big_img = kind_to_big.get(kind, kind_to_big["meh"])
+        screen.blit(big_img, big_img.get_rect(center=(512, 300)))
+
+        pygame.display.flip()
+        clock.tick(30)
+
+    pygame.quit()
