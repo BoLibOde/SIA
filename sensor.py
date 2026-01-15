@@ -1,281 +1,147 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-sensor.py (SCD41-only)
+sensor.py
 
-This version removes CCS811 entirely and only uses the SCD41 (or simulator).
-Exposes start(...) and stop() and sensor_buffer (list of SensorSample objects).
-Each SensorSample contains: temp (C), db (dB), co2 (ppm from SCD41), voc (Optional[int]), ts (epoch).
+Reads data from hardware sensors or provides simulated data when enabled.
+Supports SCD4x via I2C for CO2, temperature, humidity.
 """
 from dataclasses import dataclass
 import time
 import threading
-import os
-import struct
-import random
 import logging
-from typing import Optional
+from random import uniform, randint
+
+try:
+    from sensirion_i2c_driver import I2cTransceiver  # Sensirion I2C driver for SCD4x
+    from sensirion_i2c_scd.scd4x import Scd4xI2cDevice
+    SCD4X_AVAILABLE = True
+except ImportError:
+    SCD4X_AVAILABLE = False
 
 _LOG = logging.getLogger("sensor")
-logging.getLogger("smbus").setLevel(logging.WARNING)
 
-# Public buffer for device.py to read
-sensor_buffer = []
 
 @dataclass
 class SensorSample:
-    temp: float
-    db: float
-    co2: int
-    voc: Optional[int]
-    ts: float
-
-# Try to import smbus2 first (better I2C support), fall back to smbus
-SMBUS2 = False
-try:
-    from smbus2 import SMBus, i2c_msg
-    SMBUS2 = True
-except Exception:
-    try:
-        import smbus
-        SMBus = smbus.SMBus
-    except Exception:
-        SMBus = None
-
-# -----------------------
-# SCD41 driver (minimal)
-# -----------------------
-class SCD41:
     """
-    Minimal SCD41 driver using I2C.
-    Uses periodic measurement mode and Read Measurement command.
-    Parsing follows Sensirion convention: each float is sent as two 16-bit words,
-    each word followed by a CRC8. Total 18 bytes = 3 values * (2*2bytes + 2*CRC) = 18.
+    Represents a single sensor reading.
     """
-    ADDRESS = 0x62
-    CMD_START_PERIODIC = 0x21B1
-    CMD_READ_MEASUREMENT = 0xEC05
-    CMD_STOP_PERIODIC = 0x3F86
+    temp: float  # Temperature in °C
+    db: float    # Decibel level (unused, currently static)
+    co2: int     # CO2 concentration (ppm)
+    voc: int     # VOC concentration (not supported, currently defaulted to 0)
+    ts: float    # Timestamp (epoch time)
 
-    def __init__(self, busnum=1, address=None, logger=_LOG):
-        self.address = address or self.ADDRESS
-        self.busnum = busnum
-        self.logger = logger
-        if SMBus is None:
-            raise RuntimeError("I2C bus not available")
-        try:
-            self.bus = SMBus(busnum)
-        except Exception as e:
-            raise RuntimeError(f"Failed to open I2C bus {busnum}: {e}")
-        self.logger.info("SCD41 initialized on I2C bus %s, address 0x%02X", busnum, self.address)
 
-    @staticmethod
-    def _crc8(buf):
-        # Sensirion CRC8, polynomial 0x31, init 0xFF
-        crc = 0xFF
-        for b in buf:
-            crc ^= b
-            for _ in range(8):
-                if crc & 0x80:
-                    crc = ((crc << 1) & 0xFF) ^ 0x31
-                else:
-                    crc = (crc << 1) & 0xFF
-        return crc
-
-    def _write_command(self, cmd, args=None):
-        msb = (cmd >> 8) & 0xFF
-        lsb = cmd & 0xFF
-        try:
-            if SMBUS2:
-                write = i2c_msg.write(self.address, bytes([msb, lsb] + (args or [])))
-                self.bus.i2c_rdwr(write)
-            else:
-                self.bus.write_i2c_block_data(self.address, msb, [lsb] + (args or []))
-        except Exception as e:
-            raise RuntimeError(f"SCD41 write command 0x{cmd:04X} failed: {e}")
-
-    def start_periodic(self):
-        self._write_command(self.CMD_START_PERIODIC)
-        time.sleep(0.05)
-
-    def stop_periodic(self):
-        try:
-            self._write_command(self.CMD_STOP_PERIODIC)
-            time.sleep(0.05)
-        except Exception:
-            pass
-
-    def read_measurement(self, timeout=0.1):
-        """
-        Returns (co2_ppm:int, temperature_C:float, humidity_pct:float)
-        """
-        self._write_command(self.CMD_READ_MEASUREMENT)
-        time.sleep(0.005)
-
-        try:
-            if SMBUS2:
-                read = i2c_msg.read(self.address, 18)
-                self.bus.i2c_rdwr(read)
-                data = bytes(read)
-            else:
-                data = bytes(self.bus.read_i2c_block_data(self.address, 0, 18))
-        except Exception as e:
-            raise RuntimeError(f"SCD41 read failed: {e}")
-
-        if len(data) != 18:
-            raise RuntimeError(f"SCD41 returned unexpected length {len(data)}")
-
-        values = []
-        for i in range(0, 18, 6):
-            w1 = data[i:i+2]
-            crc1 = data[i+2]
-            w2 = data[i+3:i+5]
-            crc2 = data[i+5]
-            if self._crc8(w1) != crc1 or self._crc8(w2) != crc2:
-                raise RuntimeError("SCD41 CRC mismatch")
-            float_bytes = bytes(w1 + w2)
-            val = struct.unpack(">f", float_bytes)[0]
-            values.append(val)
-        co2 = int(round(values[0]))
-        temp = float(values[1])
-        hum = float(values[2])
-        return co2, temp, hum
-
-# -----------------------
-# Simulator classes
-# -----------------------
-class SCD41Simulator:
-    def __init__(self):
-        self.co2 = 415 + random.randint(-5, 5)
-        self.temp = 22.0 + (random.random()-0.5)
-        self.hum = 45.0 + (random.random()-2.0)
-    def start_periodic(self):
-        pass
-    def read_measurement(self):
-        # gentle random walk
-        self.co2 = max(400, min(5000, self.co2 + int(random.gauss(0, 1))))
-        self.temp += (random.random() - 0.5) * 0.05
-        self.hum += (random.random() - 0.5) * 0.1
-        return int(round(self.co2)), float(self.temp), float(self.hum)
-
-# -----------------------
-# Sensor runner (SCD41-only)
-# -----------------------
 class SensorRunner:
-    def __init__(self, poll_interval=2.0, use_scd=False, use_bme=False, use_mic=False):
-        self.poll_interval = max(0.1, float(poll_interval))
-        self.use_scd = use_scd
-        self.use_bme = use_bme
-        self.use_mic = use_mic
+    """
+    Manages periodic sensor readings from hardware or simulation.
+    """
+    def __init__(self, simulation_mode=True):
+        """
+        Initializes the SensorRunner.
+
+        Args:
+            simulation_mode (bool): If True, simulate sensor data. If False, use real hardware.
+        """
+        self.simulation_mode = simulation_mode  # True for simulation, False for hardware
         self.running = False
+        self.sensor_buffer = []  # Buffer to store sensor readings
+        self.interval = 2.0  # Sensor polling interval
         self.thread = None
-        self.lock = threading.Lock()
-        self.scd = None
-        self.sim_scd = None
+        self.lock = threading.Lock()  # Lock for thread-safe access
+        self.scd4x = None
 
-    def _init_sensors(self):
-        # Initialize SCD41 if requested
-        if self.use_scd:
-            try:
-                self.scd = SCD41(busnum=1)
-                self.scd.start_periodic()
-                _LOG.info("SCD41 initialized")
-            except Exception as e:
-                _LOG.warning("SCD41 init failed: %s — using simulator", e)
-                self.sim_scd = SCD41Simulator()
-                self.scd = self.sim_scd
-        else:
-            # Not requested: use simulator for temperature/CO2/humidity
-            self.sim_scd = SCD41Simulator()
-            self.scd = self.sim_scd
+    def _initialize_scd4x(self):
+        """
+        Initializes the SCD4x sensor via I2C.
+        """
+        try:
+            if not SCD4X_AVAILABLE:
+                raise ImportError("Required library for SCD4x not installed. Install with 'pip install sensirion-i2c-scd'.")
 
-    def start(self):
+            self.scd4x = Scd4xI2cDevice(I2cTransceiver(1, 0x62))  # I2C bus 1, default SCD4x address: 0x62
+            _LOG.info("Initializing SCD4x sensor...")
+            self.scd4x.stop_periodic_measurement()  # Reset sensor state
+            time.sleep(1)
+            self.scd4x.start_periodic_measurement()  # Start data collection
+            _LOG.info("SCD4x successfully initialized.")
+        except Exception as e:
+            _LOG.error("Failed to initialize SCD4x: %s", e)
+            raise RuntimeError("Could not initialize SCD4x sensor.") from e
+
+    def start(self, interval=2.0):
+        """
+        Starts the sensor data-reading loop.
+        """
         if self.running:
+            _LOG.warning("SensorRunner is already running.")
             return
+        self.interval = interval
         self.running = True
-        self._init_sensors()
+        if not self.simulation_mode:
+            self._initialize_scd4x()  # Initialize hardware sensor in hardware mode
         self.thread = threading.Thread(target=self._loop, daemon=True)
         self.thread.start()
-        _LOG.info("SensorRunner started (poll_interval=%.2f)", self.poll_interval)
+        _LOG.info("SensorRunner started with interval: %.1f seconds (Simulation: %s).",
+                  self.interval, "ON" if self.simulation_mode else "OFF")
 
     def stop(self):
-        if not self.running:
-            return
+        """Stops the SensorRunner."""
         self.running = False
         if self.thread:
-            self.thread.join(timeout=2.0)
-        try:
-            if isinstance(self.scd, SCD41):
-                self.scd.stop_periodic()
-        except Exception:
-            pass
-        _LOG.info("SensorRunner stopped")
+            self.thread.join()
+        if self.scd4x:
+            try:
+                self.scd4x.stop_periodic_measurement()
+                _LOG.info("Stopped periodic measurement on SCD4x.")
+            except Exception:
+                pass
+        _LOG.info("SensorRunner stopped.")
 
     def _append_sample(self, temp, db, co2, voc):
-        s = SensorSample(temp=float(temp), db=float(db), co2=int(co2), voc=voc, ts=time.time())
+        """
+        Appends a sensor sample to the buffer.
+        """
         with self.lock:
-            sensor_buffer.append(s)
-            # trim to reasonable size
-            if len(sensor_buffer) > 600:
-                del sensor_buffer[0: len(sensor_buffer) - 600]
+            sample = SensorSample(temp=temp, db=db, co2=co2, voc=voc, ts=time.time())
+            self.sensor_buffer.append(sample)
+            if len(self.sensor_buffer) > 100:  # Limit buffer size to avoid memory overflow
+                self.sensor_buffer.pop(0)
+            _LOG.debug("New sample added: %s", sample)
 
     def _loop(self):
-        temp = 22.0
-        db = 0.0
-
-        # small warmup
-        time.sleep(0.2)
-
+        """
+        Continuously collects data from hardware or generates simulated values.
+        """
         while self.running:
             try:
-                # 1) read SCD41 (CO2, temp, humidity)
-                try:
-                    co2_scd, temp_scd, hum_scd = self.scd.read_measurement()
-                except Exception as e:
-                    _LOG.warning("SCD41 read failed: %s", e)
-                    # attempt a single re-init if hardware
-                    if isinstance(self.scd, SCD41):
-                        try:
-                            self.scd.start_periodic()
-                            time.sleep(0.1)
-                            co2_scd, temp_scd, hum_scd = self.scd.read_measurement()
-                        except Exception as e2:
-                            _LOG.error("SCD41 reinit/read failed: %s", e2)
-                            # fallback to simulator
-                            self.sim_scd = SCD41Simulator()
-                            self.scd = self.sim_scd
-                            co2_scd, temp_scd, hum_scd = self.scd.read_measurement()
+                if self.simulation_mode:
+                    # Simulated Sensor Data
+                    temp = uniform(22.0, 25.0)  # Simulated temperature
+                    db = 0                    # Static decibel placeholder
+                    co2 = randint(400, 500)   # Simulated CO2
+                    voc = randint(10, 50)     # Simulated VOC
+                    _LOG.debug("Simulated Data: Temp=%.1f°C, CO2=%dppm, VOC=%dppb", temp, co2, voc)
+                else:
+                    # Read Real Hardware Data (SCD4x)
+                    if self.scd4x.get_data_ready_flag():
+                        co2, temp, _ = self.scd4x.read_measurement()
+                        voc = 0  # VOC data not supported
+                        db = 0   # dB measurement not part of SCD4x
+                        _LOG.debug("Hardware Data: Temp=%.1f°C, CO2=%dppm", temp, co2)
                     else:
-                        co2_scd, temp_scd, hum_scd = self.scd.read_measurement()
+                        _LOG.warning("SCD4x data not ready. Skipping cycle.")
+                        time.sleep(self.interval)
+                        continue
 
-                # prepare sample values (voc not available since CCS811 removed)
-                temp = temp_scd
-                co2 = co2_scd
-                voc = None  # no CCS811 -> VOC unknown
-                # db left as placeholder; mic integration not implemented here
-                db = db * 0.98 + random.random() * 0.5
-
+                # Append the sample
                 self._append_sample(temp, db, co2, voc)
 
             except Exception as e:
-                _LOG.exception("Unhandled exception in sensor loop: %s", e)
+                _LOG.error("Error during sensor loop: %s", e)
 
-            time.sleep(self.poll_interval)
+            time.sleep(self.interval)
 
-# Module-level runner used by device.py
-_RUNNER = None
 
-def start(poll_interval=2.0, use_scd=False, use_bme=False, use_mic=False):
-    global _RUNNER
-    if _RUNNER and _RUNNER.running:
-        _LOG.info("Sensor already running")
-        return
-    _RUNNER = SensorRunner(poll_interval=poll_interval, use_scd=use_scd, use_bme=use_bme, use_mic=use_mic)
-    _RUNNER.start()
-
-def stop():
-    global _RUNNER
-    if not _RUNNER:
-        return
-    _RUNNER.stop()
-    _RUNNER = None
