@@ -1,22 +1,17 @@
-# Consolidated Python requirements for the SIA project.
-# Core runtime packages used by the code in this repository.
-Flask
-requests
-smbus2
-pygame
+# Core libraries
+requests>=2.20.0
+smbus2>=0.4.1
+pygame>=2.0.0
 
-# Optional / hardware-specific packages (install only if using those features)
-# - RPi.GPIO is typically used on Raspberry Pi for GPIO control (optional).
-# - The Adafruit CircuitPython sensor drivers are only required for legacy/alternate
-#   sensor implementations found in tools/ and sketches/ (optional).
-RPi.GPIO
-adafruit-circuitpython-bme280
-adafruit-circuitpython-scd4x
-sensirion-i2c-scd
+# Hardware-specific libraries
+adafruit-circuitpython-bme280>=2.6.15
+adafruit-circuitpython-scd4x>=1.4.9
+sensirion-i2c-scd>=0.1.2
 
-# Notes:
-# - The 'smbus' module imported in some scripts is usually provided by the OS package
-#   (Debian/Ubuntu/Raspbian) python3-smbus. If you cannot install the OS package,
-#   use smbus2 (included above) as a pure-Python alternative.
-# - If you need reproducible installs, replace >= with == and pin specific versions.
-# - Flask pulls in its own dependencies (Jinja2, Werkzeug, etc.) automatically.
+# Web server-related libraries
+Flask>=1.1.2
+Jinja2>=2.10.1
+Werkzeug>=1.0.1
+
+# Optional dependencies for Raspberry Pi hardware
+RPi.GPIO>=0.7.0; platform_system != "Windows"  # Include only on non-Windows systems
