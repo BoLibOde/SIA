@@ -122,7 +122,8 @@ if __name__ == "__main__":
         # Parse command-line arguments
         args = parser.parse_args()
         POLL_INTERVAL = args.interval
-        SIMULATION_MODE = args.simulation  # True for simulation, False for hardware mode
+        SIMULATION_MODE = args.simulation  # True for simulation mode
+        USE_SCD = args.use_scd  # Use SCD4x sensor if available
 
         # Create SensorRunner instance
         sensor_runner = SensorRunner(simulation_mode=SIMULATION_MODE)
@@ -149,5 +150,3 @@ if __name__ == "__main__":
     finally:
         _LOG.info("Stopping SensorRunner...")
         sensor_runner.stop()
-
-
