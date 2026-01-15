@@ -12,6 +12,7 @@ pygame
 RPi.GPIO>=0.7.0
 adafruit-circuitpython-bme280>=3.0.0
 adafruit-circuitpython-scd4x>=1.0.0
+sensirion-i2c-scd
 
 # Notes:
 # - The 'smbus' module imported in some scripts is usually provided by the OS package
