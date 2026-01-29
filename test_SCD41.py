@@ -1,43 +1,78 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+import time
+from smbus2 import SMBus
 
-"""
-test_SCD41.py
+# Constants for the SCD41 sensor
+SCD41_I2C_ADDR = 0x62
+COMMAND_START_MEASUREMENT = [0x21, 0xB1]  # Command to start periodic measurements
+COMMAND_GET_DATA_READY = [0xE4, 0xB8]  # Check if data is ready
+COMMAND_READ_MEASUREMENT = [0xEC, 0x05]  # Read measurement results
+COMMAND_STOP_MEASUREMENT = [0x3F, 0x86]  # Stop periodic measurements
 
-This script tests the SCD4x sensor using the SensorRunner class.
-"""
 
-import logging
-from sensor import SensorRunner
+def calculate_crc(data):
+    """Calculate CRC for Sensirion sensors."""
+    crc = 0xFF
+    for byte in data:
+        crc ^= byte
+        for _ in range(8):
+            if crc & 0x80:
+                crc = (crc << 1) ^ 0x31
+            else:
+                crc <<= 1
+    return crc & 0xFF
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
-_LOG = logging.getLogger("test_SCD41")
 
-try:
-    # Instantiate SensorRunner with hardware mode (not simulation)
-    sensor_runner = SensorRunner(simulation_mode=False)
+def scd41_read_measurement(bus, address):
+    """Read CO2, temperature, and humidity values from the SCD41."""
+    bus.write_i2c_block_data(address, COMMAND_READ_MEASUREMENT[0], COMMAND_READ_MEASUREMENT[1:])
+    time.sleep(0.005)  # Wait for the sensor
 
-    # Start the sensor runner
-    sensor_runner.start(interval=2.0)
-    _LOG.info("SensorRunner started successfully.")
+    # Read 9 bytes (6 data bytes + 3 CRC bytes)
+    data = bus.read_i2c_block_data(address, 0x00, 9)
 
-    # Fetch data for a few readings and display them
-    for i in range(5):  # Collect 5 readings for testing
-        if sensor_runner.sensor_buffer:
-            latest = sensor_runner.sensor_buffer[-1]
-            print(f"Reading {i + 1}:")
-            print(f"  CO2: {latest.co2} ppm")
-            print(f"  Temperature: {latest.temp:.2f} °C")
-            print(f"  VOC: {latest.voc} ppb (simulated if unsupported)")
-        else:
-            print(f"Waiting for sensor data... (Iteration {i + 1})")
-        import time; time.sleep(2)  # Wait for 2 seconds between each reading
+    # Verify CRC for all three data fields: CO2, temperature, humidity
+    for i in range(3):
+        if calculate_crc(data[i * 3:i * 3 + 2]) != data[i * 3 + 2]:
+            raise ValueError("CRC mismatch")
 
-except Exception as e:
-    _LOG.exception("Failed to initialize or read from the SCD4x sensor: %s", e)
+    # Extract and calculate sensor values
+    co2 = int.from_bytes(data[0:2], 'big')
+    temp_raw = int.from_bytes(data[3:5], 'big')
+    humidity_raw = int.from_bytes(data[6:8], 'big')
 
-finally:
-    # Stop the SensorRunner (cleanup)
-    sensor_runner.stop()
-    _LOG.info("SensorRunner stopped.")
+    temp = -45 + (175 * temp_raw) / 65535.0
+    humidity = 100 * humidity_raw / 65535.0
+
+    return co2, temp, humidity
+
+
+def main():
+    with SMBus(1) as bus:  # Open I2C bus (usually /dev/i2c-1)
+        # Start periodic measurement
+        bus.write_i2c_block_data(SCD41_I2C_ADDR, COMMAND_START_MEASUREMENT[0], COMMAND_START_MEASUREMENT[1:])
+        time.sleep(1)  # Wait at least 5 seconds for first measurement
+
+        try:
+            while True:
+                # Poll for data readiness
+                bus.write_i2c_block_data(SCD41_I2C_ADDR, COMMAND_GET_DATA_READY[0], COMMAND_GET_DATA_READY[1:])
+                time.sleep(0.005)
+                ready = bus.read_i2c_block_data(SCD41_I2C_ADDR, 0x00, 3)
+
+                if ready[1] & 0x07FF:  # Data is ready
+                    co2, temp, humidity = scd41_read_measurement(bus, SCD41_I2C_ADDR)
+                    print(f"CO2: {co2} ppm, Temperature: {temp:.2f} °C, Humidity: {humidity:.2f} %")
+                else:
+                    print("Sensor data not ready, retrying...")
+                time.sleep(5)  # Wait for the next measurement (5-second interval)
+
+        except KeyboardInterrupt:
+            print("\nStopping measurements...")
+        finally:
+            # Stop periodic measurement
+            bus.write_i2c_block_data(SCD41_I2C_ADDR, COMMAND_STOP_MEASUREMENT[0], COMMAND_STOP_MEASUREMENT[1:])
+            print("SCD41 measurement stopped.")
+
+
+if __name__ == "__main__":
+    main()
