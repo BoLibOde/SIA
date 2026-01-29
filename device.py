@@ -5,7 +5,7 @@ device.py
 
 Main entry point for the SIA program.
 - Initializes and runs the SensorRunner.
-- Provides callbacks for UI integration.
+- Fetches real-time SCD41 sensor values and provides them to callbacks.
 - Allows switching between simulation mode and hardware mode.
 """
 import os
@@ -90,7 +90,7 @@ def upload_to_server(avg_sensor, events_list):
         _LOG.exception("Upload error: %s", e)
 
 def on_vote(kind: str):
-    """Handles user vote input (good, meh, bad)."""
+    """Handles user mood input (e.g., good, meh, bad)."""
     global good, meh, bad, smiley_override_time, smiley_ema
     ts = time.time()
     if kind == "good":
