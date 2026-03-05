@@ -56,14 +56,14 @@ def avg_sensor_values():
     """Calculate averages of sensor data."""
     try:
         if not sensor_runner.sensor_buffer:
-            return {"temp": 0, "co2": 0, "humidity": 0}
+            return {"temp": 0, "humidity": 0, "co2": 0}
         temp = round(sum(s.temp for s in sensor_runner.sensor_buffer) / len(sensor_runner.sensor_buffer), 1)
-        co2 = round(sum(s.co2 for s in sensor_runner.sensor_buffer) / len(sensor_runner.sensor_buffer), 0)
         humidity = round(sum(s.humidity for s in sensor_runner.sensor_buffer) / len(sensor_runner.sensor_buffer), 1)
-        return {"temp": temp, "co2": co2, "humidity": humidity}
+        co2 = round(sum(s.co2 for s in sensor_runner.sensor_buffer) / len(sensor_runner.sensor_buffer), 0)
+        return {"temp": temp, "humidity": humidity, "co2": co2}
     except Exception as e:
         _LOG.exception("Error computing average sensor values: %s", e)
-        return {"temp": 0, "co2": 0, "humidity": 0}
+        return {"temp": 0, "humidity": 0, "co2": 0}
 
 
 def upload_cycle():
