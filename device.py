@@ -23,11 +23,18 @@ from sensor import SensorRunner  # Import the SensorRunner class
 logging.basicConfig(level=logging.INFO)
 _LOG = logging.getLogger("device")
 
+# ============================================================
+# === CONFIGURATION: Set to True to use simulated sensor data
+# ============================================================
+USE_SIMULATION = False  # Change this to True to enable simulation mode
+# ============================================================
+
 # --- Command-Line Arguments ---
 parser = argparse.ArgumentParser(description="SIA Client (Smiley + Sensoranzeige)")
 parser.add_argument("--interval", "-i", type=float, default=2.0, help="Sensor poll interval in seconds")
 parser.add_argument("--use-scd", action="store_true", help="Use SCD4x (SCD40/SCD41) sensor if available")
 parser.add_argument("--simulation", action="store_true", help="Use simulated sensor data instead of hardware")
+parser.add_argument("--no-simulation", action="store_false", dest="simulation", help="Force hardware mode")
 
 # --- State Variables ---
 good = meh = bad = 0
@@ -43,19 +50,21 @@ upload_counter = 0
 DEVICE_ID = os.getenv("DEVICE_ID", "default_device")
 SERVER_URL = "http://127.0.0.1:5000/upload"
 
+
 # --- Helper Functions ---
 def avg_sensor_values():
     """Calculate averages of sensor data."""
     try:
         if not sensor_runner.sensor_buffer:
-            return {"temp": 0, "db": 0, "co2": 0}
+            return {"temp": 0, "co2": 0, "humidity": 0}
         temp = round(sum(s.temp for s in sensor_runner.sensor_buffer) / len(sensor_runner.sensor_buffer), 1)
-        db = round(sum(s.db for s in sensor_runner.sensor_buffer) / len(sensor_runner.sensor_buffer), 1)
         co2 = round(sum(s.co2 for s in sensor_runner.sensor_buffer) / len(sensor_runner.sensor_buffer), 0)
-        return {"temp": temp, "db": db, "co2": co2}
+        humidity = round(sum(s.humidity for s in sensor_runner.sensor_buffer) / len(sensor_runner.sensor_buffer), 1)
+        return {"temp": temp, "co2": co2, "humidity": humidity}
     except Exception as e:
         _LOG.exception("Error computing average sensor values: %s", e)
-        return {"temp": 0, "db": 0, "co2": 0}
+        return {"temp": 0, "co2": 0, "humidity": 0}
+
 
 def upload_cycle():
     """Handles the upload of sensor data."""
@@ -68,6 +77,7 @@ def upload_cycle():
         daemon=True
     ).start()
     events.clear()
+
 
 def upload_to_server(avg_sensor, events_list):
     """Uploads sensor data to the server."""
@@ -89,6 +99,7 @@ def upload_to_server(avg_sensor, events_list):
         upload_failed_time = time.time()
         _LOG.exception("Upload error: %s", e)
 
+
 def on_vote(kind: str):
     """Handles user mood input (e.g., good, meh, bad)."""
     global good, meh, bad, smiley_override_time, smiley_ema
@@ -104,6 +115,7 @@ def on_vote(kind: str):
     smiley_ema = SMILEY_EMA_ALPHA * value + (1 - SMILEY_EMA_ALPHA) * smiley_ema
     events.append({"kind": kind, "timestamp": ts})
     _LOG.info("Vote received: %s | Updated votes - Good: %d, Meh: %d, Bad: %d", kind, good, meh, bad)
+
 
 def get_latest_sensor():
     """Fetch the latest sensor sample from the sensor buffer."""
@@ -122,8 +134,20 @@ if __name__ == "__main__":
         # Parse command-line arguments
         args = parser.parse_args()
         POLL_INTERVAL = args.interval
-        SIMULATION_MODE = args.simulation  # True for simulation mode
         USE_SCD = args.use_scd  # Use SCD4x sensor if available
+
+        # Determine simulation mode: command-line argument overrides hardcoded setting
+        if hasattr(args, 'simulation') and args.simulation is not None:
+            SIMULATION_MODE = args.simulation
+        else:
+            SIMULATION_MODE = USE_SIMULATION  # Use hardcoded setting
+
+        _LOG.info("=== Configuration ===")
+        _LOG.info("Hardcoded USE_SIMULATION: %s", USE_SIMULATION)
+        _LOG.info("Command-line override: %s",
+                  "Yes" if hasattr(args, 'simulation') and args.simulation is not None else "No")
+        _LOG.info("Final SIMULATION_MODE: %s", SIMULATION_MODE)
+        _LOG.info("====================")
 
         # Create SensorRunner instance
         sensor_runner = SensorRunner(simulation_mode=SIMULATION_MODE)
@@ -135,6 +159,7 @@ if __name__ == "__main__":
 
         # Start the UI
         import ui
+
         ui.run(
             lambda: (good, meh, bad),  # Mood counts
             lambda: ("meh", smiley_override_time, 3.0),  # Smiley override
@@ -150,3 +175,5 @@ if __name__ == "__main__":
     finally:
         _LOG.info("Stopping SensorRunner...")
         sensor_runner.stop()
+
+
